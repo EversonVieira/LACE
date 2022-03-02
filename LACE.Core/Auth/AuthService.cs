@@ -10,22 +10,22 @@ namespace LACE.Core.Auth
 {
     public class AuthService : IAuth
     {
-        public BaseResponse<ISession> CreateSession()
+        public Response<ISession> CreateSession()
         {
             throw new NotImplementedException();
         }
 
-        public BaseResponse<bool> DropSession()
+        public Response<bool> DropSession()
         {
             throw new NotImplementedException();
         }
 
-        public BaseResponse<IAuthUser> GetSessionUser()
+        public Response<IAuthUser> GetSessionUser()
         {
             throw new NotImplementedException();
         }
 
-        public BaseResponse<bool> ValidateSession()
+        public Response<bool> ValidateSession()
         {
             throw new NotImplementedException();
         }
