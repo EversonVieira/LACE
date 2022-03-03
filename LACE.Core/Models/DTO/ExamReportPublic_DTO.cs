@@ -1,16 +1,13 @@
-﻿using Nedesk.Core.Models;
-using Nedesk.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LACE.Core.Models
+namespace LACE.Core.Models.DTO
 {
-    public class ExamReport : BaseModel
+    public class ExamReportPublic_DTO
     {
-        public long UserId { get; set; }
         public string SourcePatientId { get; set; }
         public string SourceExamId { get; set; }
         public string PatientCpf { get; set; }
