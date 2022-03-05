@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LACE.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 using Nedesk.Core.API;
 using Nedesk.Core.Interfaces;
 using Nedesk.Core.Models;
@@ -16,12 +17,23 @@ namespace LACE.Controllers
 
 
         [HttpPost]
-        public ActionResult<object> Login()
+        public ActionResult<IResponse<Nedesk.Core.Interfaces.ISession>> Login(IAuthUser user)
         {
-            return GetResponse(() => _authService.CreateSession());
+            return GetResponse(() => _authService.CreateSession(user), requireAuthentication: false);
+        }
+
+        [HttpGet]
+        public ActionResult<IResponse<bool>> ValidateSession()
+        {
+            return GetResponse(() => _authService.ValidateSession(), requireAuthentication: false);
+        }
+
+        [HttpDelete]
+        public ActionResult<IResponse<bool>> DropSession()
+        {
+            return GetResponse(() => _authService.DropSession(), requireAuthentication: false);
         }
 
 
-        
     }
 }

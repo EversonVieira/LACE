@@ -25,7 +25,9 @@ $@"INSERT INTO AuthUser(Id, Cpf, Rg, Name, Email, Password, IsActive, IsLocked, 
 VALUES(@Id, @Cpf, @Rg, @Name, @Email, @Password, @IsActive, @IsLocked, @CreatedBy, @ModifiedBy, @CreatedOn, @ModifiedOn); SELECT LAST_INSERT_ID();";
 
         private string UPDATE_SQL =
-$@"UPDATE AuthUser SET Name = @Name, Password = @Password, IsActive = @IsActive, IsLocked = @IsLocked, ModifiedOn = @ModifiedOn WHERE Id = @Id";
+$@"UPDATE AuthUser SET Name = @Name, Password = @Password, IsActive = @IsActive, IsLocked = @IsLocked,
+CreatedBy = @CreatedBy, ModifiedBy = @ModifiedBy, CreatedOn = @CreatedOn, ModifiedOn = @ModifiedOn
+WHERE Id = @Id";
 
 
         public AuthUserRepository(IDBConnectionFactory dBConnectionFactory, ILogger<BaseRepository> logger) : base(dBConnectionFactory, logger)
@@ -33,7 +35,7 @@ $@"UPDATE AuthUser SET Name = @Name, Password = @Password, IsActive = @IsActive,
 
         }
 
-        public async Task<Response<int>> InsertAsync(AuthUser user)
+        public Response<int> Insert(AuthUser user)
         {
             Response<int> response = new Response<int>();
 
@@ -51,7 +53,7 @@ $@"UPDATE AuthUser SET Name = @Name, Password = @Password, IsActive = @IsActive,
                 
                 using (DbCommand cmd = CreateCommand(INSERT_SQL, parameters))
                 {
-                    response.ResponseData = await ExecuteScalarAsync(cmd);
+                    response.ResponseData = ExecuteScalar(cmd);
                     response.StatusCode = HttpStatusCode.Created;
                 }
 
@@ -64,7 +66,7 @@ $@"UPDATE AuthUser SET Name = @Name, Password = @Password, IsActive = @IsActive,
             return response;
         }
 
-        public async Task<Response<bool>> UpdateAsync(AuthUser user)
+        public Response<bool> Update(AuthUser user)
         {
             Response<bool> response = new();
 
@@ -82,7 +84,7 @@ $@"UPDATE AuthUser SET Name = @Name, Password = @Password, IsActive = @IsActive,
 
                 using (DbCommand cmd = CreateCommand(UPDATE_SQL, parameters))
                 {
-                    await ExecuteNonQueryAsync(cmd);
+                    ExecuteNonQuery(cmd);
                     response.ResponseData = true;
                     response.StatusCode = HttpStatusCode.OK;
                 }
@@ -96,24 +98,18 @@ $@"UPDATE AuthUser SET Name = @Name, Password = @Password, IsActive = @IsActive,
             return response;
         }
 
-        public async Task<ListResponse<AuthUser>> FindByRequest(BaseListRequest request)
+        public ListResponse<AuthUser> FindByRequest(BaseListRequest request)
         {
             ListResponse<AuthUser> response = new();
             response.ResponseData ??= new();
 
             try
             {
-                StringBuilder sql = new StringBuilder();
-                sql.Append(SELECT_SQL);
-                if (request.Filters.Any())
-                {
-                    sql.Append(RetrieveFilterWhereClause(request.Filters));
-                }
-                sql.Append(" ORDER BY Id DESC");
+                string sql = $"{SELECT_SQL} {RetrieveFilterWhereClause(request.Filters)}";
 
                 using (DbCommand cmd = CreateCommand(sql.ToString(), RetrieveFilterParameters(request.Filters)))
                 {
-                    using (DbDataReader reader = await ExecuteReaderAsync(cmd))
+                    using (DbDataReader reader = ExecuteReader(cmd).ResponseData)
                     {
                         while (reader.Read())
                         {
@@ -132,7 +128,7 @@ $@"UPDATE AuthUser SET Name = @Name, Password = @Password, IsActive = @IsActive,
             return response;
         }
 
-        public async Task<ListResponse<AuthUser>> FindAll()
+        public ListResponse<AuthUser> FindAll()
         {
             ListResponse<AuthUser> response = new();
             response.ResponseData ??= new();
@@ -141,7 +137,7 @@ $@"UPDATE AuthUser SET Name = @Name, Password = @Password, IsActive = @IsActive,
             {
                 using (DbCommand cmd = CreateCommand(SELECT_SQL))
                 {
-                    using (DbDataReader reader = await ExecuteReaderAsync(cmd))
+                    using (DbDataReader reader = ExecuteReader(cmd).ResponseData)
                     {
                         while (reader.Read())
                         {
@@ -159,7 +155,5 @@ $@"UPDATE AuthUser SET Name = @Name, Password = @Password, IsActive = @IsActive,
 
             return response;
         }
-
-        
     }
 }

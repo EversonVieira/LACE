@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
-    <PackageReference Include="Nedesk" Version="1.0.1.1-build20220303032737" />
+    <PackageReference Include="Nedesk" Version="1.0.1.2-pre" />
   </ItemGroup>
 
 </Project>

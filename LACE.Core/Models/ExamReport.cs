@@ -18,6 +18,7 @@ namespace LACE.Core.Models
         public string FileName { get; set; }
         public string FileExtension { get; set; }
         public string FileSource { get; set; }
+        public string FilePath { get; set; }
         public DateTime ExamDate { get; set; }
         public DateTime UploadDate { get; set; }
     }

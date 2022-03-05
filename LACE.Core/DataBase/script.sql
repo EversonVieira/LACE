@@ -21,12 +21,18 @@ CREATE TABLE AuthUser(
     ModifiedOn DATETIME
 );
 
+CREATE TABLE AuthSession(
+	Id INT PRIMARY KEY AUTO_INCREMENT,
+    UserID INT,
+    SessionKey VARCHAR(1000),
+    LastRenewDate DATETIME
+);
 CREATE TABLE ExamReport(
 	Id INT PRIMARY KEY AUTO_INCREMENT,
     
     UserId INT,
-    SourcePatientID INT,
-    SourceExamId INT,
+    SourcePatientID VARCHAR(255),
+    SourceExamId VARCHAR(255),
     
     PatientCPF VARCHAR(20),
     PatientRG VARCHAR(20),
