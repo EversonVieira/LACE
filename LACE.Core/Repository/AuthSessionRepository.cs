@@ -31,9 +31,9 @@ $@"DELETE FROM AuthSession WHERE Id = @Id";
         {
         }
 
-        public Response<int> Insert(AuthSession session)
+        public Response<long> Insert(AuthSession session)
         {
-            Response<int> response = new Response<int>();
+            Response<long> response = new Response<long>();
 
             try
             {
@@ -43,7 +43,7 @@ $@"DELETE FROM AuthSession WHERE Id = @Id";
                 parameters.Add($"{nameof(AuthSession.LastRenewDate)}", session.LastRenewDate);
                 using (DbCommand cmd = CreateCommand(INSERT_SQL, parameters))
                 {
-                    response.ResponseData =  ExecuteScalar(cmd);
+                    response.ResponseData =  ExecuteScalar<long>(cmd);
                     response.StatusCode = HttpStatusCode.Created;
                 }
 

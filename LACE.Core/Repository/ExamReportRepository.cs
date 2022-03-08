@@ -35,25 +35,27 @@ WHERE Id = @Id";
 
         }
 
-        public Response<int> Insert(AuthUser user)
+        public Response<long> Insert(ExamReport exam)
         {
-            Response<int> response = new Response<int>();
+            Response<long> response = new Response<long>();
 
             try
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add($@"@{nameof(AuthUser.Cpf)}", user.Cpf);
-                parameters.Add($@"@{nameof(AuthUser.Rg)}", user.Rg);
-                parameters.Add($@"@{nameof(AuthUser.Name)}", user.Name);
-                parameters.Add($@"@{nameof(AuthUser.Email)}", user.Email);
-                parameters.Add($@"@{nameof(AuthUser.Password)}", user.Password);
-                parameters.Add($@"@{nameof(AuthUser.IsActive)}", user.IsActive);
-                parameters.Add($@"@{nameof(AuthUser.IsLocked)}", user.IsLocked);
-                base.AddBaseModelParameters(parameters, user);
+                parameters.Add($@"@{nameof(ExamReport.UserId)}", exam.UserId);
+                parameters.Add($@"@{nameof(ExamReport.PatientCPF)}", exam.FileName);
+                parameters.Add($@"@{nameof(ExamReport.PatientRG)}", exam.PatientRG);
+                parameters.Add($@"@{nameof(ExamReport.SourcePatientId)}", exam.SourcePatientId);
+                parameters.Add($@"@{nameof(ExamReport.FileName)}", exam.FileName);
+                parameters.Add($@"@{nameof(ExamReport.FileExtension)}", exam.FilePath);
+                parameters.Add($@"@{nameof(ExamReport.FilePath)}", exam.FilePath);
+                parameters.Add($@"@{nameof(ExamReport.ExamDate)}", exam.ExamDate);
+
+                base.AddBaseModelParameters(parameters, exam);
 
                 using (DbCommand cmd = CreateCommand(INSERT_SQL, parameters))
                 {
-                    response.ResponseData = ExecuteScalar(cmd);
+                    response.ResponseData = ExecuteScalar<long>(cmd);
                     response.StatusCode = HttpStatusCode.Created;
                 }
 
@@ -66,21 +68,23 @@ WHERE Id = @Id";
             return response;
         }
 
-        public Response<bool> Update(AuthUser user)
+        public Response<bool> Update(ExamReport exam)
         {
             Response<bool> response = new();
 
             try
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add($@"@{nameof(AuthUser.Cpf)}", user.Cpf);
-                parameters.Add($@"@{nameof(AuthUser.Rg)}", user.Rg);
-                parameters.Add($@"@{nameof(AuthUser.Name)}", user.Name);
-                parameters.Add($@"@{nameof(AuthUser.Email)}", user.Email);
-                parameters.Add($@"@{nameof(AuthUser.Password)}", user.Password);
-                parameters.Add($@"@{nameof(AuthUser.IsActive)}", user.IsActive);
-                parameters.Add($@"@{nameof(AuthUser.IsLocked)}", user.IsLocked);
-                base.AddBaseModelParameters(parameters, user);
+                parameters.Add($@"@{nameof(ExamReport.Id)}", exam.Id);
+                parameters.Add($@"@{nameof(ExamReport.UserId)}", exam.UserId);
+                parameters.Add($@"@{nameof(ExamReport.PatientCPF)}", exam.FileName);
+                parameters.Add($@"@{nameof(ExamReport.PatientRG)}", exam.PatientRG);
+                parameters.Add($@"@{nameof(ExamReport.SourcePatientId)}", exam.SourcePatientId);
+                parameters.Add($@"@{nameof(ExamReport.FileName)}", exam.FileName);
+                parameters.Add($@"@{nameof(ExamReport.FileExtension)}", exam.FilePath);
+                parameters.Add($@"@{nameof(ExamReport.FilePath)}", exam.FilePath);
+                parameters.Add($@"@{nameof(ExamReport.ExamDate)}", exam.ExamDate);
+                base.AddBaseModelParameters(parameters, exam);
 
                 using (DbCommand cmd = CreateCommand(UPDATE_SQL, parameters))
                 {
@@ -98,9 +102,9 @@ WHERE Id = @Id";
             return response;
         }
 
-        public ListResponse<AuthUser> FindByRequest(BaseListRequest request)
+        public ListResponse<ExamReport> FindByRequest(BaseListRequest request)
         {
-            ListResponse<AuthUser> response = new();
+            ListResponse<ExamReport> response = new();
             response.ResponseData ??= new();
 
             try
@@ -113,7 +117,7 @@ WHERE Id = @Id";
                     {
                         while (reader.Read())
                         {
-                            response.ResponseData.Add(ModelUtility.FillObject<AuthUser>(reader));
+                            response.ResponseData.Add(ModelUtility.FillObject<ExamReport>(reader));
                         }
                     }
                 }
@@ -128,9 +132,9 @@ WHERE Id = @Id";
             return response;
         }
 
-        public ListResponse<AuthUser> FindAll()
+        public ListResponse<ExamReport> FindAll()
         {
-            ListResponse<AuthUser> response = new();
+            ListResponse<ExamReport> response = new();
             response.ResponseData ??= new();
 
             try
@@ -141,7 +145,7 @@ WHERE Id = @Id";
                     {
                         while (reader.Read())
                         {
-                            response.ResponseData.Add(ModelUtility.FillObject<AuthUser>(reader));
+                            response.ResponseData.Add(ModelUtility.FillObject<ExamReport>(reader));
                         }
                     }
                 }

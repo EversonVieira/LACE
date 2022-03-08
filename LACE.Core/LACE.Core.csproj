@@ -7,13 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Business\" />
-    <Folder Include="Validators\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
-    <PackageReference Include="Nedesk" Version="1.0.1.2-pre" />
+    <PackageReference Include="Nedesk" Version="1.0.1.2-pre-3" />
   </ItemGroup>
 
 </Project>

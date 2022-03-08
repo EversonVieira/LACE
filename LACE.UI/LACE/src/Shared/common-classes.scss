@@ -1,0 +1,23 @@
+@import '/src/Shared/Variables/common-variables.scss';
+
+.btn-primary{
+    background-color: $primary-color;
+    border-color: $primary-color-border;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:active, &:hover, &:focus{
+        background-color: #30462f;
+        border-color: $primary-color-border
+    }
+
+    &:focus, &:active{
+        box-shadow: none; //0 0 0 0.25rem rgb(49 253 132 / 50%);
+    }
+    
+}
+
+.btn-check:checked + .btn-primary:focus, .btn-check:active + .btn-primary:focus, .btn-primary:active:focus, .btn-primary.active:focus, .show > .btn-primary.dropdown-toggle:focus {
+    box-shadow: none; //0 0 0 0.25rem rgb(49 253 132 / 50%);
+    background-color: rgb(49 253 132 / 50%);
+}

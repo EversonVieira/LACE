@@ -17,7 +17,7 @@ namespace LACE.Controllers
 
 
         [HttpPost]
-        public ActionResult<IResponse<Nedesk.Core.Interfaces.ISession>> Login(IAuthUser user)
+        public ActionResult<IResponse<Nedesk.Core.Interfaces.ISession>> Login(AuthUser user)
         {
             return GetResponse(() => _authService.CreateSession(user), requireAuthentication: false);
         }

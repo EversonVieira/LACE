@@ -35,9 +35,9 @@ WHERE Id = @Id";
 
         }
 
-        public Response<int> Insert(AuthUser user)
+        public Response<long> Insert(AuthUser user)
         {
-            Response<int> response = new Response<int>();
+            Response<long> response = new Response<long>();
 
             try
             {
@@ -53,7 +53,7 @@ WHERE Id = @Id";
                 
                 using (DbCommand cmd = CreateCommand(INSERT_SQL, parameters))
                 {
-                    response.ResponseData = ExecuteScalar(cmd);
+                    response.ResponseData = ExecuteScalar<long>(cmd);
                     response.StatusCode = HttpStatusCode.Created;
                 }
 
@@ -73,6 +73,7 @@ WHERE Id = @Id";
             try
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add($@"@{nameof(AuthUser.Id)}", user.Id);
                 parameters.Add($@"@{nameof(AuthUser.Cpf)}", user.Cpf);
                 parameters.Add($@"@{nameof(AuthUser.Rg)}", user.Rg);
                 parameters.Add($@"@{nameof(AuthUser.Name)}", user.Name);
