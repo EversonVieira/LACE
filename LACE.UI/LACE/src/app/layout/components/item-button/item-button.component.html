@@ -1,5 +1,10 @@
-<button [class]="'btn btn-primary ' + Class" (click)="onClick()" [routerLink]="Route" [routerLinkActive]="RouteActive" >
+<button *ngIf="!IgnoreRoute"[class]="'btn btn-primary ' + Class" (click)="onClick()" [routerLink]="Route" [routerLinkActive]="RouteActive" >
     <ng-content select="[BeforeIcon]"></ng-content>
     <label *ngIf="TextVisible" >{{Text}}</label>
     <ng-content select="[AfterIcon]"></ng-content>
+</button>
+<button *ngIf="!!IgnoreRoute" [class]="'btn btn-primary ' + Class" (click)="onClick()" >
+    <ng-content select="[BeforeIconRouteIgnored]"></ng-content>
+    <label *ngIf="TextVisible" >{{Text}}</label>
+    <ng-content select="[AfterIconRouteIgnored]"></ng-content>
 </button>
