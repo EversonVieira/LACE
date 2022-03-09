@@ -14,6 +14,7 @@ export class LayoutComponent implements OnInit {
   }
 
   toggleMenu(){
+    console.log("opa")
     this.isExpanded = !this.isExpanded;
   }
 

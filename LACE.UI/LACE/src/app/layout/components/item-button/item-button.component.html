@@ -1,0 +1,5 @@
+<button [class]="'btn btn-primary ' + Class" (click)="onClick()" [routerLink]="Route" [routerLinkActive]="RouteActive" >
+    <ng-content select="[BeforeIcon]"></ng-content>
+    <label *ngIf="TextVisible" >{{Text}}</label>
+    <ng-content select="[AfterIcon]"></ng-content>
+</button>
