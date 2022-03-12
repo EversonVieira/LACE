@@ -14,8 +14,6 @@ export class BaseComponent {
     protected _needUser: boolean = true;
 
     public _currentUser: AuthUser = CurrentUser.getUser();
-    public _hasLoggedUser: boolean = false;
-
     public isLogged: boolean = false;
 
 
@@ -59,7 +57,7 @@ export class BaseComponent {
 
                         if (userResponse.isValid) {
                             CurrentUser.setUser(<AuthUser>userResponse.responseData);
-                            this._hasLoggedUser = true;
+                            this.isLogged = true;
                         }
                         else {
                             this._router.navigateByUrl('/home');

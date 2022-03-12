@@ -1,4 +1,4 @@
-<div *ngIf="!isLogged">
+<div *ngIf="isLogged">
     <div class="container">
        <label>Olá, {{_currentUser.name}}</label>
        <div class="d-flex w-100 space-between">
@@ -8,7 +8,7 @@
     </div>
 </div>
 
-<div *ngIf="!!isLogged">
+<div *ngIf="!isLogged">
     <div class="container">
     <label><a [routerLink]="'/home'">Login</a></label>
     </div>
