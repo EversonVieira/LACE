@@ -5,15 +5,17 @@ import { ConfigurationComponent } from './pages/configuration/configuration.comp
 import { HomeComponent } from './pages/home/home.component';
 import { ReportsComponent } from './pages/reports/reports.component';
 import { UserDashboardComponent } from './pages/users/user-dashboard/user-dashboard.component';
+import { UserRegisterComponent } from './pages/users/user-register/user-register.component';
 
 const routes: Routes = [
   {path: "", redirectTo: "home", pathMatch: 'full' },
   {path: "''", redirectTo: "home" },
   {path: "home", component: HomeComponent,  pathMatch: 'full'},
   {path: "reports", component: ReportsComponent },
-  {path: "dashboard/users", component: UserDashboardComponent },
+  // {path: "dashboard/users", component: UserDashboardComponent },
   {path: "about", component: AboutComponent },
-  {path: "configuration", component: ConfigurationComponent },
+  // {path: "configuration", component: ConfigurationComponent },
+  {path: "user/register", component: UserRegisterComponent },
 ];
 
 @NgModule({

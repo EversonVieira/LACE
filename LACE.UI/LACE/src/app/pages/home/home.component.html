@@ -1,47 +1,38 @@
 <div class="content-wrapper">
     <div class="title">
-        <label>Home Works</label>
+        <label>Página Inicial</label>
     </div>
 
     <div class="content">
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
-        <p>ASDASDASDASDASDAS</p>
+        <div class="content-container">
+            <label class="home-text">Tenha acesso aos seus últimos laudos no LACE.</label>
+            <label class="home-text">Faça Login ou cadastra-se para continuar.</label>
+        </div>
+        <div class="content-container">
+            <div class="content-item">
+                <form [formGroup]="userForm">
+
+                    <div class="form-group pt-3">
+                        <label for="email">E-mail: </label>
+                        <input class="form-control" id="email" type="text" formControlName="email">
+                    </div>
+
+                    <div class="form-group pt-3">
+                        <label for="password">Senha: </label>
+                        <input class="form-control" id="password" type="password" formControlName="password">
+                    </div>
+
+                    <div class="form-group pt-3">
+                        <button class="btn btn-primary w-100" >Login</button>
+                        <div class="d-flex">
+                            <label>Não possui conta? <a [routerLink]="'/user/register'">Cadastre-se</a></label>
+    
+                            <!-- <a [routerLink]="'/user/register'">recuperar a senha</a> -->
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
     </div>
 </div>

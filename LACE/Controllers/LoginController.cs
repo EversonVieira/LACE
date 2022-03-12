@@ -34,6 +34,11 @@ namespace LACE.Controllers
             return GetResponse(() => _authService.DropSession(), requireAuthentication: false);
         }
 
+        [HttpGet("user")]
+        public ActionResult<IResponse<IAuthUser>> GetSessionUser()
+        {
+            return GetResponse(() => _authService.GetSessionUser());
+        }
 
     }
 }

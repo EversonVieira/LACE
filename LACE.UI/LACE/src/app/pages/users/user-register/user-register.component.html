@@ -1,0 +1,50 @@
+<div class="content-wrapper">
+    <div class="title">
+        <label>Cadastrar Usuário</label>
+    </div>
+
+    <div class="content">
+        <div class="content-container">
+            <div class="content-item">
+                <form [formGroup]="userForm">
+            
+                    <div class="form-group pt-3">
+                        <label for="name">Nome: </label>
+                        <input class="form-control" id="name" type="text" formControlName="name">
+                    </div>
+            
+                    <div class="form-group pt-3">
+                        <label for="email">E-mail: </label>
+                        <input class="form-control" id="email" type="text" formControlName="email">
+                    </div>
+            
+                    <div class="form-group pt-3">
+                        <label for="cpf">Cpf: </label>
+                        <input class="form-control" [mask]="'000.000.000-00'" id="cpf" type="text" formControlName="cpf">
+                    </div>
+            
+                    <div class="form-group pt-3">
+                        <label for="rg">Rg: </label>
+                        <input class="form-control" id="rg" type="text" formControlName="rg">
+                    </div>
+            
+                    <div class="form-group pt-3">
+                        <label for="password">Senha: </label>
+                        <input class="form-control" id="password" type="password" formControlName="password">
+                    </div>
+            
+                    <div class="form-group pt-3">
+                        <label for="confirmPassword">Confirmar Senha: </label>
+                        <input class="form-control" id="confirmPassword" type="password" formControlName="confirmPassword">
+                    </div>
+            
+                    <div class="form-group pt-3">
+                        <button class="btn btn-primary w-100">Cadastrar</button>
+                    </div>
+            
+                </form>
+            </div>
+        </div>
+    
+    </div>
+</div>

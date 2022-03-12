@@ -56,12 +56,12 @@
   position: relative;
   color: #fff;
   display: flex;
-  width: 100%;
+  width: 100vw;
   min-height: $header-height;
   max-height: $header-height;
   background-color: $primary-color;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   z-index: 3;
 }

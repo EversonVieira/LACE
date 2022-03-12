@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
@@ -14,6 +14,16 @@ import { ReportsComponent } from './pages/reports/reports.component';
 import { ConfigurationComponent } from './pages/configuration/configuration.component';
 import { AboutComponent } from './pages/about/about.component';
 import { UserDashboardComponent } from './pages/users/user-dashboard/user-dashboard.component';
+import { AppInjector } from 'src/shared/services/app-injector.service';
+import { UserRegisterComponent } from './pages/users/user-register/user-register.component';
+import { UserUpdateComponent } from './pages/users/user-update/user-update.component';
+import { NgxMaskModule } from 'ngx-mask';
+import { NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule } from 'ngx-ui-loader';
+import { HttpConfiguration } from 'src/shared/models/HttpConfiguration';
+import { Myhttpconfig } from './conf/myhttpconfig';
+import { ToastrModule } from 'ngx-toastr';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HeaderLoginComponent } from './layout/components/header-login/header-login.component';
 
 @NgModule({
   declarations: [
@@ -24,18 +34,35 @@ import { UserDashboardComponent } from './pages/users/user-dashboard/user-dashbo
     ReportsComponent,
     ConfigurationComponent,
     AboutComponent,
-    UserDashboardComponent
+    UserDashboardComponent,
+    UserRegisterComponent,
+    UserUpdateComponent,
+    HeaderLoginComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserModule,
+    NgxMaskModule.forRoot(),
     BrowserAnimationsModule,
+    NgxUiLoaderModule,
+    NgxUiLoaderRouterModule,
+    HttpClientModule,
+    NgxUiLoaderHttpModule,
     ReactiveFormsModule,
     CommonModule,
+    ToastrModule.forRoot(), // ToastrModule added
     NgbModule
   ],
-  providers: [],
+  providers: [
+    { provide: HttpConfiguration, useClass: Myhttpconfig },
+    { provide: AppInjector, useClass:AppInjector},
+
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(injector: Injector) {
+    AppInjector.setInjector(injector);
+  }
+}

@@ -1,1 +1,26 @@
-<p>reports works!</p>
+
+<div class="content-wrapper">
+    <div class="title">
+        <label>Laudos</label>
+    </div>
+
+    <div class="content">
+        <div class="content-item w-100">
+            <table>
+                <tr>
+                    <th>Visualizar</th>
+                    <th>Nome</th>
+                    <th>Data do Exame</th>
+                    <th>Data da disponibilidade</th>
+                </tr>
+                <tr *ngFor="let item of reports">
+                    <td><button class="btn btn-primary">Visualizar</button></td>
+                    <td>{{item.fileName}}</td>
+                    <td>{{item.examDate | date:'short'}}</td>
+                    <td>{{item.uploadDate | date:'short'}}</td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</div>

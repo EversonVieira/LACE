@@ -20,17 +20,19 @@
 .btn-check:checked + .btn-primary:focus, .btn-check:active + .btn-primary:focus, .btn-primary:active:focus, .btn-primary.active:focus, .show > .btn-primary.dropdown-toggle:focus {
     box-shadow: none; //0 0 0 0.25rem rgb(49 253 132 / 50%);
     background-color: rgb(49 253 132 / 50%);
+    color: #333;
 }
 
 .content-wrapper{
+    position: relative;
     display: flex;
     flex-direction: column;
-    margin: 10px 0 0 10px;
-    padding: 5px 0 0 5px;
+    padding: 15px;
+    width: 100%;
     max-height: calc(100vh - $header-height - 15px);
+    height: 100%;
     overflow-y: scroll;
-    // min-width: calc(100vw - 95px);
-    
+        
     .title{
         font-size: 16px;
         font-weight: bold;
@@ -40,8 +42,9 @@
     }
 
     .content{
-        padding: 5px 0 0 5px;
-        margin: 10px 0 0 10px;
+        display: flex;
+        width: 100%;
+        height: 100%;
     }
 }
 
