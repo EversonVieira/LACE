@@ -1,5 +1,7 @@
-﻿using LACE.Core.Business;
+﻿using LACE.Core.Adapter;
+using LACE.Core.Business;
 using LACE.Core.Models;
+using LACE.Core.Models.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Nedesk.Core.API;
@@ -11,22 +13,22 @@ namespace LACE.Controllers
     [ApiController]
     public class UserController : NDBaseController
     {
-        private AuthUserBusiness _authUserBusiness;
-        public UserController(AuthUserBusiness authUserBusiness ,ILogger<NDBaseController> logger, IAuth AuthService, IHttpContextAccessor httpContextAccessor) : base(logger, AuthService, httpContextAccessor)
+        private AuthUserAdapter _authUserAdapter;
+        public UserController(AuthUserAdapter authUserAdapter ,ILogger<NDBaseController> logger, IAuth AuthService, IHttpContextAccessor httpContextAccessor) : base(logger, AuthService, httpContextAccessor)
         {
-            _authUserBusiness = authUserBusiness; 
+            _authUserAdapter = authUserAdapter; 
         }
 
         [HttpPost]
-        public ActionResult<IResponse<long>> Create(AuthUser user)
+        public ActionResult<IResponse<long>> Create(DTO_AuthUser_Register user)
         {
-            return GetResponse(() => _authUserBusiness.Insert(user));
+            return GetResponse(() => _authUserAdapter.Insert(user), requireAuthentication: false);
         }
 
         [HttpPut]
-        public ActionResult<IResponse<bool>> Update(AuthUser user)
+        public ActionResult<IResponse<bool>> Update(DTO_AuthUser_Update user)
         {
-            return GetResponse(() => _authUserBusiness.Update(user));
+            return GetResponse(() => _authUserAdapter.Update(user));
         }
     }
 }

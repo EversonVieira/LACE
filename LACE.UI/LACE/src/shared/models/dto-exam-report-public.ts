@@ -3,7 +3,7 @@
         sourceExamId: string = '';
         patientCpf: string = '';
         patientRG: string = '';
-        fileName: string = '';
+        examName: string = '';
         fileExtension: string = '';
         fileSource: string = '';
         examDate:Date = new Date();

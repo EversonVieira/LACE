@@ -3,6 +3,7 @@ using LACE.Core.Repository;
 using Microsoft.Extensions.Logging;
 using Nedesk.Core.Interfaces;
 using Nedesk.Core.Models;
+using Nedesk.Extensions;
 
 namespace LACE.Core.Validators
 {
@@ -17,29 +18,32 @@ namespace LACE.Core.Validators
             _logger = logger;
         }
 
-        public void ValidateInsert(IResponse<ExamReport> response)
+        public void ValidateInsert(IBaseResponse response, ExamReport report)
         {
-
+            ValidateCommon(response, report);
         }
 
-        public void ValidateUpdate(IResponse<ExamReport> response)
+        public void ValidateUpdate(IBaseResponse response, ExamReport report)
         {
+            ValidateCommon(response, report);
 
         }
-
-        public void ValidateDelete(IResponse<ExamReport> response)
+        public void ValidateDelete(IBaseResponse response, ExamReport report)
         {
-
+            ValidateCommon(response, report);
         }
 
-        public void ValidateSelect(IResponse<ExamReport> response, BaseListRequest request)
+        private void ValidateCommon(IBaseResponse response, ExamReport report)
         {
+            if (report.PatientCPF.IsNullOrEmpty())
+            {
+                response.AddValidationMessage("911", "'PatientCpf' é obrigatório.");
+            }
 
-        }
-
-        private void ValidateCommon(IResponse<ExamReport> response)
-        {
-
+            if (report.PatientRG.IsNullOrEmpty())
+            {
+                response.AddValidationMessage("911", "'PatientRG' é obrigatório.");
+            }
         }
 
     }

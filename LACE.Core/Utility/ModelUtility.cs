@@ -22,12 +22,30 @@ namespace LACE.Core.Utility
 
                 if (reader.GetColumnSchema().ToList().Exists(x => x.ColumnName.Equals(prop.Name)) && reader[prop.Name] != DBNull.Value)
                 {
-                    prop.SetValue(obj, reader[prop.Name]);
+                    prop.SetValue(obj, Convert.ChangeType(reader[prop.Name], prop.PropertyType));
                 }
             }
 
 
             return obj;
+        }
+
+        public static TOutput FromObj<TInput, TOutput>(TInput obj)
+        {
+            TOutput output = Activator.CreateInstance<TOutput>();
+
+            var outputProperties = typeof(TOutput).GetProperties().ToList();
+            var inputProperties = typeof(TInput).GetProperties().ToList();
+
+            foreach (PropertyInfo prop in outputProperties)
+            {
+                if (prop.SetMethod.IsNotNull() && inputProperties.Exists(x => x.Name.Equals(prop.Name)))
+                {
+                    prop.SetValue(output, inputProperties.FirstOrDefault(x => x.Name.Equals(prop.Name)).GetValue(obj));
+                }
+            }
+
+            return output;
         }
     }
 }

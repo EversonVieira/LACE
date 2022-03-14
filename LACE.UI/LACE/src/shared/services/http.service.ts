@@ -20,7 +20,8 @@ export class HttpService {
       headers = headers.set('Access-Control-Allow-Methods', this.httpConfiguration.AccessControlAllowMethods);
       headers = headers.set("Access-Control-Allow-Headers", this.httpConfiguration.AccessControlAllowHeaders);
       headers = headers.set('Content-Type', this.httpConfiguration.ContentType);
-      headers = headers.set('Session', this.httpConfiguration.NDAuth);
+      headers = headers.set('session', localStorage.getItem('Session') || '');
+
       return headers;
   }
   post<T>(url: string, data: any) {

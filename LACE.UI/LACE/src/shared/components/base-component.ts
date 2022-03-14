@@ -33,53 +33,47 @@ export class BaseComponent {
     }
 
 
-    validateUser() {
-        if (this._needUser) {
+    async validateUser(forceCheck:boolean = false ) {
+        if (this._needUser || forceCheck) {
 
-            let session = localStorage.getItem('Session');
+            try{
+                let session = localStorage.getItem('Session');
 
-            if (!!session) {
-
-                this._loginService.validate().subscribe(response => {
-
-                    if (this.invalidResponse(response)) {
-                        this._router.navigateByUrl('/home');
-                        CurrentUser.setUser(new AuthUser());
+                if (!!session) {
+    
+                    const validateSession = await this._loginService.validate().toPromise();
+    
+                    if(this.invalidResponse(<BaseResponse<boolean>> validateSession)){
                         return;
                     }
+    
+                    const userResponse = await this._loginService.getSessionUser().toPromise();
+                    if(this.invalidResponse(<BaseResponse<AuthUser>> userResponse)){
+                        return;
+                    }
+    
+                    CurrentUser.setUser(<AuthUser> userResponse?.responseData);
 
-                    this._loginService.getSessionUser().subscribe(userResponse => {
-                        if (this.invalidResponse(response)) {
-                            this._router.navigateByUrl('/home');
-                            CurrentUser.setUser(new AuthUser());
-                            return;
-                        }
-
-                        if (userResponse.isValid) {
-                            CurrentUser.setUser(<AuthUser>userResponse.responseData);
-                            this.isLogged = true;
-                        }
-                        else {
-                            this._router.navigateByUrl('/home');
-                            CurrentUser.setUser(new AuthUser());
-                            return;
-                        }
-                    });
-
-                });
+                    this.isLogged = CurrentUser.getUser().id > 0;
+    
+                }
+                else {
+                    this._router.navigateByUrl('/home');
+                }
             }
-            else {
+            catch(ex){
+                CurrentUser.setUser(new AuthUser());
                 this._router.navigateByUrl('/home');
+                this.handleHttpError();
             }
+           
         }
     }
 
     invalidResponse<T>(response: BaseResponse<T>): boolean {
-        if (response.isValid) return false;
-
+        console.log(response);
         this.ShowNotifications(response);
-
-        return true;
+        return !(response.isValid);
     }
 
     ShowNotifications<T>(response: BaseResponse<T>) {
@@ -105,6 +99,10 @@ export class BaseComponent {
                     this._toastrService.show(element.text);
             }
         });
+    }
+
+    handleHttpError() {
+        this._toastrService.error("Não foi possível estabelecer conexão com o serviço, tente novamente mais tarde.");
     }
 
 }

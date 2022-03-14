@@ -38,6 +38,7 @@
         font-weight: bold;
         border-bottom: 1px solid #333;
         padding: 5px;
+        margin-bottom: 10px;
         width: 100%;
     }
 
@@ -85,3 +86,73 @@ form{
     background: rgb(42, 46, 52);
     border-radius: 8px;
   }
+
+  
+
+*{
+    font-family: "DM Sans";
+    
+}
+
+*:host{
+  width: 100%;
+}
+label{
+  margin: 0;
+}
+a{
+  color: $secondary-color;
+
+  &:hover{
+    color: rgba(24, 255, 117, 1);
+  }
+}
+
+.btn-check:checked + .btn-primary, .btn-check:active + .btn-primary, .btn-primary:active, .btn-primary.active, .show > .btn-primary.dropdown-toggle{
+  background-color: rgba(49, 253, 132, 0.5);
+}
+
+.content-container{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  padding: 5px;
+}
+
+.content-item{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.12), 0 -1px 3px 0 rgba(0, 0, 0, 0.12);
+  padding: 15px;
+  max-height: none;
+  form{
+      display: flex;
+      flex-direction: column;
+  }
+}
+
+.home-text{
+  font-size: 32px;
+  font-weight: bold;
+  color: $primary-color;
+}
+
+table{
+  width: 100%;
+  border: none;
+}
+th{
+  background-color: #eee;
+  padding:10px;
+}
+td{
+  background-color: rgb(255, 255, 255);
+  padding:10px;
+}
+tr{
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.12), 0 -1px 3px 0 rgba(0, 0, 0, 0.12);
+}

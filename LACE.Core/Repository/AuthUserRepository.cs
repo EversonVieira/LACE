@@ -21,8 +21,8 @@ namespace LACE.Core.Repository
 @$"SELECT Id, Cpf, Rg, Name, Email, Password, IsActive, IsLocked, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn FROM AuthUser ";
 
         private string INSERT_SQL =
-$@"INSERT INTO AuthUser(Id, Cpf, Rg, Name, Email, Password, IsActive, IsLocked, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn)
-VALUES(@Id, @Cpf, @Rg, @Name, @Email, @Password, @IsActive, @IsLocked, @CreatedBy, @ModifiedBy, @CreatedOn, @ModifiedOn); SELECT LAST_INSERT_ID();";
+$@"INSERT INTO AuthUser(Cpf, Rg, Name, Email, Password, IsActive, IsLocked, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn)
+VALUES(@Cpf, @Rg, @Name, @Email, @Password, @IsActive, @IsLocked, @CreatedBy, @ModifiedBy, @CreatedOn, @ModifiedOn); SELECT LAST_INSERT_ID();";
 
         private string UPDATE_SQL =
 $@"UPDATE AuthUser SET Name = @Name, Password = @Password, IsActive = @IsActive, IsLocked = @IsLocked,
@@ -53,7 +53,7 @@ WHERE Id = @Id";
                 
                 using (DbCommand cmd = CreateCommand(INSERT_SQL, parameters))
                 {
-                    response.ResponseData = ExecuteScalar<long>(cmd);
+                    response.ResponseData = ExecuteScalar(cmd);
                     response.StatusCode = HttpStatusCode.Created;
                 }
 
@@ -118,6 +118,8 @@ WHERE Id = @Id";
                         }
                     }
                 }
+
+                response.StatusCode = HttpStatusCode.OK;
 
             }
             catch(Exception ex)

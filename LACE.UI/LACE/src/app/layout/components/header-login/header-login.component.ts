@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseComponent } from 'src/shared/components/base-component';
+import { BaseComponent, CurrentUser } from 'src/shared/components/base-component';
+import { AuthUser } from 'src/shared/models/auth-user';
 
 @Component({
   selector: 'app-header-login',
@@ -15,7 +16,16 @@ export class HeaderLoginComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  doLogout(){
-    
+  async doLogout(){
+
+
+    try{
+      const logoutResponse = await this._loginService.logout().toPromise();
+      localStorage.removeItem("Session");
+      CurrentUser.setUser(new AuthUser());
+    }
+    catch{
+      this.handleHttpError();
+    }
   }
 }

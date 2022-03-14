@@ -24,13 +24,11 @@ namespace LACE.Core.Business
 
         public Response<long> Insert(AuthUser model)
         {
-            model.Password = LoginUtility.EncryptPassword(model.Password);
             return _authUserRepository.Insert(model);
         }
 
         public Response<bool> Update(AuthUser model)
         {
-            model.Password = LoginUtility.EncryptPassword(model.Password);
             return _authUserRepository.Update(model);
         }
 
@@ -46,11 +44,16 @@ namespace LACE.Core.Business
 
             request.Filters.Add(new Filter()
             {
-                Target1 = "UserId",
+                Target1 = "Id",
                 OperationType = FilterOperationType.Equals,
                 Value1 = Id
             });
 
+            return _authUserRepository.FindByRequest(request);
+        }
+
+        public ListResponse<AuthUser> FindByRequest(BaseListRequest request)
+        {
             return _authUserRepository.FindByRequest(request);
         }
     }

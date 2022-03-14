@@ -2,7 +2,7 @@
     <div class="container">
        <label>Olá, {{_currentUser.name}}</label>
        <div class="d-flex w-100 space-between">
-           <a [routerLink]="'user/update'">Gerenciar a conta</a>
+           <a [routerLink]="'/user/update'">Gerenciar a conta</a>
            <a class="ps-3" [routerLink]="'/home'" (click)="doLogout()">Sair</a>
        </div>
     </div>

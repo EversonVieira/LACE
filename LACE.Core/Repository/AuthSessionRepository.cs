@@ -119,10 +119,16 @@ $@"DELETE FROM AuthSession WHERE Id = @Id";
                 Dictionary<string, object> parameters = RetrieveFilterParameters(request.Filters);
                 string sql = $"{SELECT_SQL} {RetrieveFilterWhereClause(request.Filters)}";
 
-                using (DbCommand cmd = CreateCommand(SELECT_SQL, parameters))
+                using (DbCommand cmd = CreateCommand(sql, parameters))
                 {
-                    ExecuteNonQuery(cmd);
-                    response.StatusCode = HttpStatusCode.OK;
+                    using (DbDataReader reader = ExecuteReader(cmd).ResponseData)
+                    {
+                        response.ResponseData ??= new List<AuthSession>();
+                        while (reader.Read())
+                        {
+                            response.ResponseData.Add(FillObject<AuthSession>(reader));
+                        }
+                    }
                 }
 
             }

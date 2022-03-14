@@ -7,6 +7,6 @@ export class HttpConfiguration {
   AccessControlAllowMethods = 'GET,POST,OPTIONS,DELETE,PUT';
   AccessControlAllowHeaders = "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization";
   ContentType = "application/json";
-  NDAuth = sessionStorage.getItem('NDAuth') || '';
+  NDAuth = sessionStorage.getItem('Session') || '';
   enviroment: Enviroment = new Enviroment();
 }

@@ -1,4 +1,5 @@
 import { BaseModel } from "./base-model";
+import { Role } from "./role";
 
 export class AuthUser extends BaseModel {
     name:string = '';
@@ -6,6 +7,17 @@ export class AuthUser extends BaseModel {
     password:string = '';
     cpf:string = '';
     rg:string = '';
+    roles:Role[] = [];
+    isActive:boolean = false;
+    isLocked:boolean = false;
+}
+
+export class DTO_AuthUser_Register extends AuthUser{
+    confirmPasssword:string = '';
+}
+
+export class DTO_AuthUser_Update extends DTO_AuthUser_Register{
+    oldPassword:string = '';
 }
 
 export class DTO_ExamReportPublic {

@@ -4,8 +4,8 @@ import { MessageTypeEnum } from "./message-type-enum";
 export class BaseResponse<T>{
     responseData?: T = undefined;
     messages:Message[] = [];
-    isValid: boolean = !this.messages.find(x => x.messageType >= 0);
-    inError: boolean = !!this.messages.find(x => x.messageType >= 4);
+    isValid: boolean = true;
+    inError: boolean = false;
     hasAnyMessages: boolean = this.messages.length > 0;
     hasAnyCautionMessages: boolean = !!this.messages.find(x => x.code == MessageTypeEnum.Caution);
     hasValidationMessages: boolean = !!this.messages.find(x => x.code == MessageTypeEnum.Validation);

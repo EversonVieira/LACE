@@ -15,7 +15,7 @@ namespace LACE.Core.Models
         public string SourceExamId { get; set; }
         public string PatientCPF { get; set; }
         public string PatientRG { get; set; }
-        public string FileName { get; set; }
+        public string ExamName { get; set; }
         public string FileExtension { get; set; }
         public string FileSource { get; set; }
         public string FilePath { get; set; }

@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace LACE.Core.Models.DTO
 {
-    public class ExamReportPublic_DTO
+    public class DTO_ExamReport
     {
         public string SourcePatientId { get; set; }
         public string SourceExamId { get; set; }
-        public string PatientCpf { get; set; }
+        public string PatientCPF { get; set; }
         public string PatientRG { get; set; }
-        public string FileName { get; set; }
+        public string ExamName { get; set; }
         public string FileExtension { get; set; }
         public string FileSource { get; set; }
         public DateTime ExamDate { get; set; }

@@ -14,10 +14,10 @@ export class LayoutComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.validateUser(true);
   }
 
   toggleMenu(){
-    console.log("opa")
     this.isExpanded = !this.isExpanded;
   }
 

@@ -23,8 +23,8 @@
                     </div>
 
                     <div class="form-group pt-3">
-                        <button class="btn btn-primary w-100" >Login</button>
-                        <div class="d-flex">
+                        <button class="btn btn-primary w-100" (click)="onSubmit()">Login</button>
+                        <div class="d-flex pt-2">
                             <label>Não possui conta? <a [routerLink]="'/user/register'">Cadastre-se</a></label>
     
                             <!-- <a [routerLink]="'/user/register'">recuperar a senha</a> -->

@@ -39,7 +39,7 @@ namespace LACE.Core.Utility
 
             foreach(byte b in salt)
             {
-                sb.Append(salt);
+                sb.Append(b.ToString("X2"));
             }
 
             return sb.ToString();
@@ -75,7 +75,7 @@ namespace LACE.Core.Utility
 
             foreach (byte b in salt)
             {
-                sb.Append(salt);
+                sb.Append(b.ToString("X2"));
             }
 
             return sb.ToString();

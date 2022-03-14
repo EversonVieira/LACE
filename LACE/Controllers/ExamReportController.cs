@@ -1,5 +1,7 @@
 ﻿using LACE.Core.Business;
 using LACE.Core.Models;
+using LACE.Core.Models.DTO;
+using LACE.Core.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Nedesk.Core.API;
@@ -21,20 +23,27 @@ namespace LACE.Controllers
         [HttpGet]
         public ActionResult<IResponse<List<ExamReport>>> GetBySession()
         {
-            var userResponse = GetResponse(() => _authService.GetSessionUser());
-            if(userResponse.Value.InError)
+            var userResponse = _authService.GetSessionUser();
+            if(userResponse.InError)
             {
                 ListResponse<ExamReport> response = new ListResponse<ExamReport>();
-                response.Merge(userResponse.Value);
+                response.Merge(userResponse);
                 return response;
             }
-            return GetResponse(() => _examReportBusiness.FindByUserId(userResponse.Value.ResponseData.Id));
+
+            if (!userResponse.HasResponseData)
+            {
+                ListResponse<ExamReport> response = new ListResponse<ExamReport>();
+                response.AddWarningMessage("911", "Dados do usuário não foram encontrados.");
+                return response;
+            }
+            return GetResponse(() => _examReportBusiness.FindByUserId(userResponse.ResponseData.Id));
         }
 
         [HttpPost]
-        public ActionResult<IResponse<long>> Create(ExamReport report)
+        public ActionResult<IResponse<long>> Create(DTO_ExamReport report)
         {
-            return GetResponse(() => _examReportBusiness.Insert(report));
+            return GetResponse(() => _examReportBusiness.Insert(ModelUtility.FromObj<DTO_ExamReport, ExamReport>(report)));
         }
 
     }

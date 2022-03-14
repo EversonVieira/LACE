@@ -94,6 +94,7 @@ namespace LACE.Core.Auth
             session.Id = sessionResponse.ResponseData;
             response.ResponseData = session;
 
+            response.AddInformationMessage("911", "Logado com sucesso!");
             return response;
         }
 
@@ -182,6 +183,7 @@ namespace LACE.Core.Auth
             }
 
             response.ResponseData = listResponse.ResponseData.First();
+            response.StatusCode = HttpStatusCode.OK;
             return response;
         }
 
@@ -225,7 +227,12 @@ namespace LACE.Core.Auth
                 return response;
             }
 
+            currentSession.LastRenewDate = DateTime.Now;
+            _sessionRepository.Update(currentSession);
+
             response.ResponseData = true;
+            response.StatusCode = HttpStatusCode.OK;
+
             return response;
         }
     }

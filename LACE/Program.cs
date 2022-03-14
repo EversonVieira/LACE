@@ -1,6 +1,9 @@
+using LACE.Core.Adapter;
 using LACE.Core.Auth;
 using LACE.Core.Business;
 using LACE.Core.Repository;
+using LACE.Core.Validators;
+using Microsoft.OpenApi.Models;
 using Nedesk.Core.DataBase.Factory;
 using Nedesk.Core.Interfaces;
 
@@ -12,12 +15,38 @@ builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Session", new OpenApiSecurityScheme
+    {
+        Description = @"Session of the current logged user.",
+        Name = "Session",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Session"
+                },
+                Name = "Session",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
+});
 
 BuildCoreServices(builder);
 BuildServices(builder);
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -61,6 +90,15 @@ void BuildServices(WebApplicationBuilder builder)
     builder.Services.AddTransient<AuthUserBusiness>();
     builder.Services.AddTransient<ExamReportBusiness>();
 
+    // Adapter
+    builder.Services.AddTransient<AuthUserAdapter>();
+
+
     // Services
     builder.Services.AddTransient<IAuth, AuthService>();
+
+    // Validators
+    builder.Services.AddTransient<ExamReportValidator>();
+
+
 }

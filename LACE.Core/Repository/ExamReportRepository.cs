@@ -21,7 +21,7 @@ $@"SELECT Id, UserId, SourcePatientId, SourceExamId, PatientCpf, PatientRG, File
 
         private string INSERT_SQL =
 $@"INSERT INTO ExamReport(UserId, SourcePatientId, SourceExamId, PatientCpf, PatientRG, FileName, FileExtension, FilePath, ExamDate, UploadDate, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn)
-VALUES(@UserId, @SourcePatientId, @SourceExamId, @PatientCpf, @PatientRG, @FileName, @FileExtension, @FilePath, @ExamDate, @UploadDate, @CreatedBy, @ModifiedBy, @CreatedOn, @ModifiedOn)";
+VALUES(@UserId, @SourcePatientId, @SourceExamId, @PatientCpf, @PatientRG, @FileName, @FileExtension, @FilePath, @ExamDate, @UploadDate, @CreatedBy, @ModifiedBy, @CreatedOn, @ModifiedOn); SELECT LAST_INSERT_ID()";
 
         private string UPDATE_SQL = 
 $@"UPDATE ExamReport SET UserId = @UserId, SourcePatientId = @SourcePatientId, SourceExamId = @SourceExamId, PatiendCpf = @PatientCpf, PatientRg = @PatientRg, 
@@ -43,13 +43,15 @@ WHERE Id = @Id";
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add($@"@{nameof(ExamReport.UserId)}", exam.UserId);
-                parameters.Add($@"@{nameof(ExamReport.PatientCPF)}", exam.FileName);
+                parameters.Add($@"@{nameof(ExamReport.PatientCPF)}", exam.ExamName);
                 parameters.Add($@"@{nameof(ExamReport.PatientRG)}", exam.PatientRG);
                 parameters.Add($@"@{nameof(ExamReport.SourcePatientId)}", exam.SourcePatientId);
-                parameters.Add($@"@{nameof(ExamReport.FileName)}", exam.FileName);
+                parameters.Add($@"@{nameof(ExamReport.SourceExamId)}", exam.SourceExamId);
+                parameters.Add($@"@{nameof(ExamReport.ExamName)}", exam.ExamName);
                 parameters.Add($@"@{nameof(ExamReport.FileExtension)}", exam.FilePath);
                 parameters.Add($@"@{nameof(ExamReport.FilePath)}", exam.FilePath);
                 parameters.Add($@"@{nameof(ExamReport.ExamDate)}", exam.ExamDate);
+                parameters.Add($@"@{nameof(ExamReport.UploadDate)}", exam.UploadDate);
 
                 base.AddBaseModelParameters(parameters, exam);
 
@@ -77,13 +79,15 @@ WHERE Id = @Id";
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add($@"@{nameof(ExamReport.Id)}", exam.Id);
                 parameters.Add($@"@{nameof(ExamReport.UserId)}", exam.UserId);
-                parameters.Add($@"@{nameof(ExamReport.PatientCPF)}", exam.FileName);
+                parameters.Add($@"@{nameof(ExamReport.PatientCPF)}", exam.ExamName);
                 parameters.Add($@"@{nameof(ExamReport.PatientRG)}", exam.PatientRG);
                 parameters.Add($@"@{nameof(ExamReport.SourcePatientId)}", exam.SourcePatientId);
-                parameters.Add($@"@{nameof(ExamReport.FileName)}", exam.FileName);
+                parameters.Add($@"@{nameof(ExamReport.SourceExamId)}", exam.SourceExamId);
+                parameters.Add($@"@{nameof(ExamReport.ExamName)}", exam.ExamName);
                 parameters.Add($@"@{nameof(ExamReport.FileExtension)}", exam.FilePath);
                 parameters.Add($@"@{nameof(ExamReport.FilePath)}", exam.FilePath);
                 parameters.Add($@"@{nameof(ExamReport.ExamDate)}", exam.ExamDate);
+                parameters.Add($@"@{nameof(ExamReport.UploadDate)}", exam.UploadDate);
                 base.AddBaseModelParameters(parameters, exam);
 
                 using (DbCommand cmd = CreateCommand(UPDATE_SQL, parameters))
