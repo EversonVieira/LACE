@@ -31,7 +31,7 @@ export class UserRegisterComponent extends BaseComponent implements OnInit {
     const authUser: DTO_AuthUser_Register = new DTO_AuthUser_Register();
     this.formGroupToModel(authUser);
 
-    if (authUser.password !== authUser.confirmPasssword) {
+    if (authUser.password !== authUser.confirmPassword) {
       this._toastrService.warning("Senhas não correspondem.");
       return;
     }
@@ -53,6 +53,6 @@ export class UserRegisterComponent extends BaseComponent implements OnInit {
     authUser.rg = this.userForm.get('rg')?.value;
     authUser.email = this.userForm.get('email')?.value;
     authUser.password = this.userForm.get('password')?.value;
-    authUser.confirmPasssword = this.userForm.get('confirmPassword')?.value;
+    authUser.confirmPassword = this.userForm.get('confirmPassword')?.value;
   }
 }

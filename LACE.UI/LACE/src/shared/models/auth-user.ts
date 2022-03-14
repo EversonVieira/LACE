@@ -13,7 +13,7 @@ export class AuthUser extends BaseModel {
 }
 
 export class DTO_AuthUser_Register extends AuthUser{
-    confirmPasssword:string = '';
+    confirmPassword:string = '';
 }
 
 export class DTO_AuthUser_Update extends DTO_AuthUser_Register{
