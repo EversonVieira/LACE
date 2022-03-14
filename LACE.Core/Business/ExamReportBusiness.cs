@@ -1,4 +1,5 @@
 ﻿using LACE.Core.Models;
+using LACE.Core.Models.DTO;
 using LACE.Core.Repository;
 using LACE.Core.Utility;
 using LACE.Core.Validators;
@@ -28,39 +29,53 @@ namespace LACE.Core.Business
             _logger = logger;
         }
 
-        public Response<long> Insert(ExamReport report)
+        public Response<long> Insert(DTO_ExamReport report)
         {
             Response<long> response = new Response<long>();
 
-            _validator.ValidateInsert(response, report);
+            ExamReport endReport = ModelUtility.FromObj<DTO_ExamReport, ExamReport>(report);
+            _validator.ValidateInsert(response, endReport);
+
             if (!response.IsValid)
                 return response;
 
-            ExamReportStorageUtility.SaveFile(report);
+            ExamReportStorageUtility.SaveFile(endReport);
 
-            return _examReportRepository.Insert(report);
+            return _examReportRepository.Insert(endReport);
         }
 
-        public Response<bool> Update(ExamReport report)
+        public Response<bool> Update(DTO_ExamReport report)
         {
             Response<bool> response = new Response<bool>();
 
-            _validator.ValidateUpdate(response, report);
+            ExamReport endReport = ModelUtility.FromObj<DTO_ExamReport, ExamReport>(report);
+
+            _validator.ValidateUpdate(response, endReport);
             if (!response.IsValid)
                 return response;
 
-            return _examReportRepository.Update(report);
+            return _examReportRepository.Update(endReport);
         }
 
-        public ListResponse<ExamReport> FindAll()
+        public ListResponse<DTO_ExamReport> FindAll()
         {
-            return _examReportRepository.FindAll();
+            ListResponse<DTO_ExamReport> response = new ListResponse<DTO_ExamReport>();
+
+            var examReportResponse =  _examReportRepository.FindAll();
+            foreach (ExamReport rpt in examReportResponse.ResponseData)
+            {
+                response = new ListResponse<DTO_ExamReport>();
+                response.ResponseData.Add(ModelUtility.FromObj<ExamReport, DTO_ExamReport>(rpt));
+            }
+
+            return response;
+
         }
 
-        public ListResponse<ExamReport> FindByUserId(long userId)
+        public ListResponse<DTO_ExamReport> FindByUserId(long userId)
         {
 
-            ListResponse<ExamReport> response = new ListResponse<ExamReport>();
+            ListResponse<DTO_ExamReport> response = new ListResponse<DTO_ExamReport>();
 
 
             ListResponse<AuthUser> userResponse = _authUserBusiness.FindById(userId);
@@ -92,12 +107,18 @@ namespace LACE.Core.Business
                 },
             });
 
-            response = _examReportRepository.FindByRequest(request);
+            var examReportResponse = _examReportRepository.FindByRequest(request);
 
             if (!response.IsValid)
                 return response;
 
-            ExamReportStorageUtility.GetFiles(response.ResponseData);
+            ExamReportStorageUtility.GetFiles(examReportResponse.ResponseData, _logger);
+
+            foreach(ExamReport rpt in examReportResponse.ResponseData)
+            {
+                response = new ListResponse<DTO_ExamReport>();
+                response.ResponseData.Add(ModelUtility.FromObj<ExamReport, DTO_ExamReport>(rpt));
+            }
 
             return response;
         }

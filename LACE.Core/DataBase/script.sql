@@ -37,8 +37,8 @@ CREATE TABLE ExamReport(
     PatientCPF VARCHAR(20),
     PatientRG VARCHAR(20),
     
-    FileName VARCHAR(255),
-    FileExtension VARCHAR(10),
+    ExamName VARCHAR(255),
+    FileExtension VARCHAR(100),
     FilePath VARCHAR(500),
     ExamDate DATETIME,
     UploadDate DATETIME,

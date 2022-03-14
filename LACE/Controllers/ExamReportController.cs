@@ -15,25 +15,25 @@ namespace LACE.Controllers
     public class ExamReportController : NDBaseController
     {
         private readonly ExamReportBusiness _examReportBusiness;
-        public ExamReportController(ExamReportBusiness examReportBusiness ,ILogger<NDBaseController> logger, IAuth AuthService, IHttpContextAccessor httpContextAccessor) : base(logger, AuthService, httpContextAccessor)
+        public ExamReportController(ExamReportBusiness examReportBusiness, ILogger<NDBaseController> logger, IAuth AuthService, IHttpContextAccessor httpContextAccessor) : base(logger, AuthService, httpContextAccessor)
         {
-            _examReportBusiness = examReportBusiness; 
+            _examReportBusiness = examReportBusiness;
         }
 
         [HttpGet]
-        public ActionResult<IResponse<List<ExamReport>>> GetBySession()
+        public ActionResult<IResponse<List<DTO_ExamReport>>> GetBySession()
         {
+            ListResponse<DTO_ExamReport> response = new ListResponse<DTO_ExamReport>();
+
             var userResponse = _authService.GetSessionUser();
-            if(userResponse.InError)
+            if (userResponse.InError)
             {
-                ListResponse<ExamReport> response = new ListResponse<ExamReport>();
                 response.Merge(userResponse);
                 return response;
             }
 
             if (!userResponse.HasResponseData)
             {
-                ListResponse<ExamReport> response = new ListResponse<ExamReport>();
                 response.AddWarningMessage("911", "Dados do usuário não foram encontrados.");
                 return response;
             }
@@ -43,7 +43,7 @@ namespace LACE.Controllers
         [HttpPost]
         public ActionResult<IResponse<long>> Create(DTO_ExamReport report)
         {
-            return GetResponse(() => _examReportBusiness.Insert(ModelUtility.FromObj<DTO_ExamReport, ExamReport>(report)));
+            return GetResponse(() => _examReportBusiness.Insert(report));
         }
 
     }

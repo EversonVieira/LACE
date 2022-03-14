@@ -17,15 +17,15 @@ namespace LACE.Core.Repository
     public class ExamReportRepository : BaseRepository
     {
         private string SELECT_SQL =
-$@"SELECT Id, UserId, SourcePatientId, SourceExamId, PatientCpf, PatientRG, FileName, FileExtension, FilePath, ExamDate, UploadDate, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn FROM ExamReport";
+$@"SELECT Id, UserId, SourcePatientId, SourceExamId, PatientCPF, PatientRG, ExamName, FileExtension, FilePath, ExamDate, UploadDate, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn FROM ExamReport";
 
         private string INSERT_SQL =
-$@"INSERT INTO ExamReport(UserId, SourcePatientId, SourceExamId, PatientCpf, PatientRG, FileName, FileExtension, FilePath, ExamDate, UploadDate, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn)
-VALUES(@UserId, @SourcePatientId, @SourceExamId, @PatientCpf, @PatientRG, @FileName, @FileExtension, @FilePath, @ExamDate, @UploadDate, @CreatedBy, @ModifiedBy, @CreatedOn, @ModifiedOn); SELECT LAST_INSERT_ID()";
+$@"INSERT INTO ExamReport(UserId, SourcePatientId, SourceExamId, PatientCpf, PatientRG, ExamName, FileExtension, FilePath, ExamDate, UploadDate, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn)
+VALUES(@UserId, @SourcePatientId, @SourceExamId, @PatientCpf, @PatientRG, @ExamName, @FileExtension, @FilePath, @ExamDate, @UploadDate, @CreatedBy, @ModifiedBy, @CreatedOn, @ModifiedOn); SELECT LAST_INSERT_ID()";
 
         private string UPDATE_SQL = 
 $@"UPDATE ExamReport SET UserId = @UserId, SourcePatientId = @SourcePatientId, SourceExamId = @SourceExamId, PatiendCpf = @PatientCpf, PatientRg = @PatientRg, 
-FileName = @FileName, FileExtension = @FileExtension, FilePath = @FilhePath, ExamDate = @ExamDate, UploadDate = @UploadDate,
+ExamName = @ExamName, FileExtension = @FileExtension, FilePath = @FilhePath, ExamDate = @ExamDate, UploadDate = @UploadDate,
 CreatedBy = @CreatedBy, ModifiedBy = @ModifiedBy, CreatedOn = @CreatedOn, ModifiedOn = @ModifiedOn
 WHERE Id = @Id";
 
@@ -48,7 +48,7 @@ WHERE Id = @Id";
                 parameters.Add($@"@{nameof(ExamReport.SourcePatientId)}", exam.SourcePatientId);
                 parameters.Add($@"@{nameof(ExamReport.SourceExamId)}", exam.SourceExamId);
                 parameters.Add($@"@{nameof(ExamReport.ExamName)}", exam.ExamName);
-                parameters.Add($@"@{nameof(ExamReport.FileExtension)}", exam.FilePath);
+                parameters.Add($@"@{nameof(ExamReport.FileExtension)}", exam.FileExtension);
                 parameters.Add($@"@{nameof(ExamReport.FilePath)}", exam.FilePath);
                 parameters.Add($@"@{nameof(ExamReport.ExamDate)}", exam.ExamDate);
                 parameters.Add($@"@{nameof(ExamReport.UploadDate)}", exam.UploadDate);

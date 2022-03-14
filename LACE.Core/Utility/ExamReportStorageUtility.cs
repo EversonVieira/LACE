@@ -1,5 +1,6 @@
 ﻿using LACE.Core.ExtensionMethods;
 using LACE.Core.Models;
+using Microsoft.Extensions.Logging;
 using Nedesk.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -34,15 +35,24 @@ namespace LACE.Core.Utility
             return response;
         }
 
-        public static void GetFiles(List<ExamReport> reports)
+        public static void GetFiles(List<ExamReport> reports, ILogger logger)
         {
             foreach (ExamReport rpt in reports)
             {
-                string file = GenerateFilePath(rpt);
+                string file = $@"{storagePath}/{GenerateFilePath(rpt)}";
 
-                using (StreamReader sr = new StreamReader(file))
+                try
                 {
-                    rpt.FileSource = sr.ReadToEnd();
+                    using (StreamReader sr = new StreamReader(file))
+                    {
+                        rpt.FileSource = sr.ReadToEnd();
+                    }
+
+                }
+                catch(Exception ex)
+                {
+                    logger.LogWarning($"File not found: {ex.Message}");
+                    logger.LogError(ex, ex.Message);
                 }
             }
         }
@@ -51,8 +61,8 @@ namespace LACE.Core.Utility
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append(report.UploadDate.ToString("yyMMdd"));
-            sb.Append(report.CreatedOn.ToString("yyMMdd"));
+            sb.Append(report.UploadDate.ToString("yyMMddhhmmss"));
+            sb.Append(report.CreatedOn.ToString("yyMMddhhmmss"));
             sb.Append(report.PatientCPF.RemoveDotsAndDashes());
             sb.Append(report.PatientRG.RemoveDotsAndDashes());
             sb.Append(report.ExamName);
