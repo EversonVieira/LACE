@@ -79,26 +79,26 @@ void BuildCoreServices(WebApplicationBuilder builder)
 void BuildServices(WebApplicationBuilder builder)
 {
     // SQL Connection
-    builder.Services.AddTransient<IDBConnectionFactory, MySqlConnectionFactory>(x => new MySqlConnectionFactory(builder.Configuration.GetConnectionString("mysql")));
+    builder.Services.AddScoped<IDBConnectionFactory, MySqlConnectionFactory>(x => new MySqlConnectionFactory(builder.Configuration.GetConnectionString("mysql")));
 
     // Repositories
-    builder.Services.AddTransient<AuthUserRepository>();
-    builder.Services.AddTransient<AuthSessionRepository>();
-    builder.Services.AddTransient<ExamReportRepository>();
+    builder.Services.AddScoped<AuthUserRepository>();
+    builder.Services.AddScoped<AuthSessionRepository>();
+    builder.Services.AddScoped<ExamReportRepository>();
 
     // Business 
-    builder.Services.AddTransient<AuthUserBusiness>();
-    builder.Services.AddTransient<ExamReportBusiness>();
+    builder.Services.AddScoped<AuthUserBusiness>();
+    builder.Services.AddScoped<ExamReportBusiness>();
 
     // Adapter
-    builder.Services.AddTransient<AuthUserAdapter>();
+    builder.Services.AddScoped<AuthUserAdapter>();
 
 
     // Services
-    builder.Services.AddTransient<IAuth, AuthService>();
+    builder.Services.AddScoped<IAuth, AuthService>();
 
     // Validators
-    builder.Services.AddTransient<ExamReportValidator>();
+    builder.Services.AddScoped<ExamReportValidator>();
 
 
 }

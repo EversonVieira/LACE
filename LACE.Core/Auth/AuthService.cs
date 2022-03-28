@@ -95,6 +95,8 @@ namespace LACE.Core.Auth
             response.ResponseData = session;
 
             response.AddInformationMessage("911", "Logado com sucesso!");
+
+            _userRepository.CloseConnection();
             return response;
         }
 
@@ -124,6 +126,7 @@ namespace LACE.Core.Auth
                 return response;
             }
 
+            _sessionRepository.CloseConnection();
             var removeResponse = _sessionRepository.DeleteById(sessionResponse.ResponseData.First().Id);
             return removeResponse;
         }
@@ -184,6 +187,7 @@ namespace LACE.Core.Auth
 
             response.ResponseData = listResponse.ResponseData.First();
             response.StatusCode = HttpStatusCode.OK;
+            _sessionRepository.CloseConnection();
             return response;
         }
 
@@ -233,6 +237,7 @@ namespace LACE.Core.Auth
             response.ResponseData = true;
             response.StatusCode = HttpStatusCode.OK;
 
+            _sessionRepository.CloseConnection();
             return response;
         }
     }

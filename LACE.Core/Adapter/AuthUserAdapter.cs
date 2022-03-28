@@ -71,6 +71,8 @@ namespace LACE.Core.Adapter
                 return response;
             }
 
+            model.Id = findResponse.ResponseData.First().Id;
+
             return _authUserBusiness.Update(model);
         }
         

@@ -26,10 +26,12 @@ namespace LACE.Core.Utility
                 creating = true;
                 Directory.CreateDirectory(storagePath);
             }
-            
-            using (StreamWriter wr = new StreamWriter(report.FilePath))
+
+            byte[] buffer = Convert.FromBase64String(report.FileSource.Split(",")[1]);
+
+            using (FileStream stream = File.Create(report.FilePath))
             {
-                wr.Write(report.FileSource);
+                stream.Write(buffer, 0, buffer.Length);
             }
 
             return response;
@@ -39,14 +41,12 @@ namespace LACE.Core.Utility
         {
             foreach (ExamReport rpt in reports)
             {
-                string file = $@"{storagePath}/{GenerateFilePath(rpt)}";
-
                 try
                 {
-                    using (StreamReader sr = new StreamReader(file))
-                    {
-                        rpt.FileSource = sr.ReadToEnd();
-                    }
+
+                    byte[] buffer = File.ReadAllBytes(rpt.FilePath);
+
+                    rpt.FileSource = Convert.ToBase64String(buffer);
 
                 }
                 catch(Exception ex)
@@ -61,11 +61,10 @@ namespace LACE.Core.Utility
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append(report.UploadDate.ToString("yyMMddhhmmss"));
-            sb.Append(report.CreatedOn.ToString("yyMMddhhmmss"));
-            sb.Append(report.PatientCPF.RemoveDotsAndDashes());
-            sb.Append(report.PatientRG.RemoveDotsAndDashes());
-            sb.Append(report.ExamName);
+            sb.Append(report.UploadDate.ToString("yyMMddhhmmss."));
+            sb.Append($"{ report.PatientCPF.RemoveDotsAndDashes()}.");
+            sb.Append($"{report.PatientRG.RemoveDotsAndDashes()}.");
+            sb.Append($"{report.ExamName}");
             sb.Append($".{report.FileExtension}");
             return sb.ToString();
         }

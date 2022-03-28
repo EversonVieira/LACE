@@ -1,4 +1,4 @@
-import { DTO_ExamReportPublic } from "./dto-exam-report-public";
+import { DTO_ExamReportPublic } from "src/shared/models/dto-exam-report-public";
 
 export class ExamReport extends DTO_ExamReportPublic {
     userId:number = 0;

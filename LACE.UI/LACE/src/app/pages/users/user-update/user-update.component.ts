@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { BaseComponent } from 'src/shared/components/base-component';
+import { BaseComponent, CurrentUser } from 'src/shared/components/base-component';
 import { DTO_AuthUser_Register, DTO_AuthUser_Update } from 'src/shared/models/auth-user';
 import { UserService } from 'src/shared/services/user.service';
 
@@ -12,13 +12,13 @@ import { UserService } from 'src/shared/services/user.service';
 export class UserUpdateComponent extends BaseComponent implements OnInit {
 
   public userForm:FormGroup = new FormGroup({
-    name: new FormControl(''),
-    cpf: new FormControl(''),
-    rg: new FormControl(''),
-    email: new FormControl(''),
+    name: new FormControl(CurrentUser.getUser().name),
+    cpf: new FormControl(CurrentUser.getUser().cpf),
+    rg: new FormControl(CurrentUser.getUser().rg),
+    email: new FormControl(CurrentUser.getUser().email),
     password: new FormControl(''),
-    confirmPassowrd: new FormControl(''),
-    oldPassowrd: new FormControl('')
+    confirmPassword: new FormControl(''),
+    oldPassword: new FormControl('')
   });
 
   constructor(private _userService: UserService) {
@@ -32,14 +32,15 @@ export class UserUpdateComponent extends BaseComponent implements OnInit {
     const authUser: DTO_AuthUser_Update = new DTO_AuthUser_Update();
     this.formGroupToModel(authUser);
 
+
     if (authUser.password !== authUser.confirmPassword) {
       this._toastrService.warning("Senhas não correspondem");
       return;
     }
 
-    this._userService.create(authUser).subscribe(response => {
+    this._userService.update(authUser).subscribe(response => {
       if (response.isValid) {
-        this._toastrService.info("Usuário cadastrado com sucesso");
+        this._toastrService.info("Usuário atualizado com sucesso");
       }
       this.ShowNotifications(response);
     }, error => {
@@ -48,6 +49,7 @@ export class UserUpdateComponent extends BaseComponent implements OnInit {
 
   }
 
+  
   private formGroupToModel(authUser: DTO_AuthUser_Update) {
     authUser.name = this.userForm.get('name')?.value;
     authUser.cpf = this.userForm.get('cpf')?.value;

@@ -4,6 +4,7 @@ import { AboutComponent } from './pages/about/about.component';
 import { ConfigurationComponent } from './pages/configuration/configuration.component';
 import { HomeComponent } from './pages/home/home.component';
 import { ReportsComponent } from './pages/reports/reports.component';
+import { UploadComponent } from './pages/reports/upload/upload.component';
 import { UserDashboardComponent } from './pages/users/user-dashboard/user-dashboard.component';
 import { UserRegisterComponent } from './pages/users/user-register/user-register.component';
 import { UserUpdateComponent } from './pages/users/user-update/user-update.component';
@@ -13,6 +14,7 @@ const routes: Routes = [
   {path: "''", redirectTo: "home" },
   {path: "home", component: HomeComponent,  pathMatch: 'full'},
   {path: "reports", component: ReportsComponent },
+  {path: "reports/upload", component: UploadComponent },
   // {path: "dashboard/users", component: UserDashboardComponent },
   {path: "about", component: AboutComponent },
   // {path: "configuration", component: ConfigurationComponent },

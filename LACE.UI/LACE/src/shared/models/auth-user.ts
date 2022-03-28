@@ -20,14 +20,14 @@ export class DTO_AuthUser_Update extends DTO_AuthUser_Register{
     oldPassword:string = '';
 }
 
-export class DTO_ExamReportPublic {
-    sourcePatientId: string = '';
-    sourceExamId: string = '';
-    patientCpf: string = '';
-    patientRG: string = '';
-    fileName: string = '';
-    fileExtension: string = '';
-    fileSource: string = '';
-    examDate:Date = new Date();
-    uploadDate:Date = new Date();
-}
+// export class DTO_ExamReportPublic {
+//     sourcePatientId: string = '';
+//     sourceExamId: string = '';
+//     patientCpf: string = '';
+//     patientRG: string = '';
+//     fileName: string = '';
+//     fileExtension: string = '';
+//     fileSource: string = '';
+//     examDate:Date = new Date();
+//     uploadDate:Date = new Date();
+// }

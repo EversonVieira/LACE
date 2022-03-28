@@ -24,21 +24,33 @@ namespace LACE.Core.Business
 
         public Response<long> Insert(AuthUser model)
         {
-            return _authUserRepository.Insert(model);
+            Response<long> response =  _authUserRepository.Insert(model);
+            _authUserRepository.CloseConnection();
+
+            return response;
         }
 
         public Response<bool> Update(AuthUser model)
         {
-            return _authUserRepository.Update(model);
+            Response<bool> response = _authUserRepository.Update(model);
+            _authUserRepository.CloseConnection();
+
+            return response;
         }
 
         public ListResponse<AuthUser> FindAll()
         {
-            return _authUserRepository.FindAll();
+            ListResponse<AuthUser> response =  _authUserRepository.FindAll();
+
+            _authUserRepository.CloseConnection();
+
+            return response;
+
         }
 
         public ListResponse<AuthUser> FindById(long Id)
         {
+            ListResponse<AuthUser> response = new ListResponse<AuthUser>();
 
             BaseListRequest request = new BaseListRequest();
 
@@ -49,12 +61,19 @@ namespace LACE.Core.Business
                 Value1 = Id
             });
 
-            return _authUserRepository.FindByRequest(request);
+            response = _authUserRepository.FindByRequest(request);
+
+            _authUserRepository.CloseConnection();
+
+            return response;
         }
 
         public ListResponse<AuthUser> FindByRequest(BaseListRequest request)
         {
-            return _authUserRepository.FindByRequest(request);
+            ListResponse<AuthUser> response = _authUserRepository.FindByRequest(request);
+
+            _authUserRepository.CloseConnection();
+            return response;
         }
     }
 }

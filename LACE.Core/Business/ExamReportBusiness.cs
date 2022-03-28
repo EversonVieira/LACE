@@ -41,7 +41,11 @@ namespace LACE.Core.Business
 
             ExamReportStorageUtility.SaveFile(endReport);
 
-            return _examReportRepository.Insert(endReport);
+            response = _examReportRepository.Insert(endReport);
+
+            _examReportRepository.CloseConnection();
+
+            return response;
         }
 
         public Response<bool> Update(DTO_ExamReport report)
@@ -54,7 +58,10 @@ namespace LACE.Core.Business
             if (!response.IsValid)
                 return response;
 
-            return _examReportRepository.Update(endReport);
+            response = _examReportRepository.Update(endReport);
+            _examReportRepository.CloseConnection();
+
+            return response;
         }
 
         public ListResponse<DTO_ExamReport> FindAll()
@@ -62,12 +69,16 @@ namespace LACE.Core.Business
             ListResponse<DTO_ExamReport> response = new ListResponse<DTO_ExamReport>();
 
             var examReportResponse =  _examReportRepository.FindAll();
+            ExamReportStorageUtility.GetFiles(examReportResponse.ResponseData, _logger);
+
             foreach (ExamReport rpt in examReportResponse.ResponseData)
             {
                 response = new ListResponse<DTO_ExamReport>();
                 response.ResponseData.Add(ModelUtility.FromObj<ExamReport, DTO_ExamReport>(rpt));
             }
 
+
+            _examReportRepository.CloseConnection();
             return response;
 
         }
@@ -117,9 +128,11 @@ namespace LACE.Core.Business
             foreach(ExamReport rpt in examReportResponse.ResponseData)
             {
                 response = new ListResponse<DTO_ExamReport>();
+                response.ResponseData ??= new List<DTO_ExamReport>();
                 response.ResponseData.Add(ModelUtility.FromObj<ExamReport, DTO_ExamReport>(rpt));
             }
 
+            _examReportRepository.CloseConnection();
             return response;
         }
     }
