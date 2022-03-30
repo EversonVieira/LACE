@@ -33,45 +33,48 @@ export class BaseComponent {
     }
 
 
-    async validateUser(forceCheck:boolean = false ) {
+    async validateUser(forceCheck: boolean = false) {
         if (this._needUser || forceCheck) {
 
-            try{
+            try {
                 let session = localStorage.getItem('Session');
 
                 if (!!session) {
-    
+
                     const validateSession = await this._loginService.validate().toPromise();
-    
-                    if(this.invalidResponse(<BaseResponse<boolean>> validateSession)){
+
+                    if (this.invalidResponse(<BaseResponse<boolean>>validateSession)) {
+                        this._router.navigateByUrl('/home');
                         return;
                     }
-    
+
                     const userResponse = await this._loginService.getSessionUser().toPromise();
-                    if(this.invalidResponse(<BaseResponse<AuthUser>> userResponse)){
+                    if (this.invalidResponse(<BaseResponse<AuthUser>>userResponse)) {
+                        this._router.navigateByUrl('/home');
                         return;
                     }
-    
-                    CurrentUser.setUser(<AuthUser> userResponse?.responseData);
+
+                    CurrentUser.setUser(<AuthUser>userResponse?.responseData);
+                    this._currentUser  = CurrentUser.getUser();
 
                     this.isLogged = CurrentUser.getUser().id > 0;
-    
+
+                    if (!this.isLogged)
+                        this._router.navigateByUrl('/home');
                 }
                 else {
                     this._router.navigateByUrl('/home');
                 }
             }
-            catch(ex){
+            catch (ex) {
                 CurrentUser.setUser(new AuthUser());
                 this._router.navigateByUrl('/home');
                 this.handleHttpError();
             }
-           
         }
     }
 
     invalidResponse<T>(response: BaseResponse<T>): boolean {
-        console.log(response);
         this.ShowNotifications(response);
         return !(response.isValid);
     }
@@ -116,7 +119,7 @@ export class CurrentUser {
         Object.assign(this.authUser, user);
     }
 
-    static getUser() {
+    static getUser():AuthUser {
         return this.authUser;
     }
 }

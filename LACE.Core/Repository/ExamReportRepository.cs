@@ -43,7 +43,7 @@ WHERE Id = @Id";
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add($@"@{nameof(ExamReport.UserId)}", exam.UserId);
-                parameters.Add($@"@{nameof(ExamReport.PatientCPF)}", exam.ExamName);
+                parameters.Add($@"@{nameof(ExamReport.PatientCPF)}", exam.PatientCPF);
                 parameters.Add($@"@{nameof(ExamReport.PatientRG)}", exam.PatientRG);
                 parameters.Add($@"@{nameof(ExamReport.SourcePatientId)}", exam.SourcePatientId);
                 parameters.Add($@"@{nameof(ExamReport.SourceExamId)}", exam.SourceExamId);

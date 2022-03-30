@@ -74,8 +74,6 @@ WHERE Id = @Id";
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add($@"@{nameof(AuthUser.Id)}", user.Id);
-                parameters.Add($@"@{nameof(AuthUser.Cpf)}", user.Cpf);
-                parameters.Add($@"@{nameof(AuthUser.Rg)}", user.Rg);
                 parameters.Add($@"@{nameof(AuthUser.Name)}", user.Name);
                 parameters.Add($@"@{nameof(AuthUser.Email)}", user.Email);
                 parameters.Add($@"@{nameof(AuthUser.Password)}", user.Password);

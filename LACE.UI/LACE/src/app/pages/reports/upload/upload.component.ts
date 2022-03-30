@@ -38,6 +38,7 @@ export class UploadComponent extends BaseComponent implements OnInit {
         this.fileSource = event.target.result;
       }
       reader.readAsDataURL(event.target.files[0]);
+
     }
   }
 
@@ -54,7 +55,7 @@ export class UploadComponent extends BaseComponent implements OnInit {
     const obj:DTO_ExamReportPublic = new DTO_ExamReportPublic();
 
     obj.fileExtension = this.file?.name?.split('.')[1] || '';
-    obj.examName = this.file?.name?.split('.')[0] || '';
+    obj.examName = this.uploadForm.get('examName')?.value;
     obj.fileSource = this.fileSource;
     obj.sourceExamId = this.uploadForm.get('sourceExamId')?.value;
     obj.sourcePatientId = this.uploadForm.get('sourcePatientId')?.value;

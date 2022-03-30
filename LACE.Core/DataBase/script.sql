@@ -39,7 +39,7 @@ CREATE TABLE ExamReport(
     
     ExamName VARCHAR(255),
     FileExtension VARCHAR(100),
-    FilePath VARCHAR(50000),
+    FilePath VARCHAR(5000),
     ExamDate DATETIME,
     UploadDate DATETIME,
     

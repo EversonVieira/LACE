@@ -39,6 +39,7 @@ export class UserRegisterComponent extends BaseComponent implements OnInit {
     this._userService.create(authUser).subscribe(response => {
       if (response.isValid) {
         this._toastrService.info("Usuário cadastrado com sucesso.");
+        this._router.navigateByUrl('/home');
       }
       this.ShowNotifications(response);
     }, error => {
@@ -54,5 +55,6 @@ export class UserRegisterComponent extends BaseComponent implements OnInit {
     authUser.email = this.userForm.get('email')?.value;
     authUser.password = this.userForm.get('password')?.value;
     authUser.confirmPassword = this.userForm.get('confirmPassword')?.value;
+    console.log(authUser);
   }
 }

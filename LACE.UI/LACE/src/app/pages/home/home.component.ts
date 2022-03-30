@@ -31,23 +31,32 @@ export class HomeComponent extends BaseComponent implements OnInit {
     authUser.email = this.userForm.get('email')?.value;
     authUser.password = this.userForm.get('password')?.value;
 
-    try{
-      const loginResponse = await this._loginService.login(authUser).toPromise();
-
-      if(this.invalidResponse(<BaseResponse<AuthSession>> loginResponse)){
-        return;
-      }
-
-      localStorage.setItem("Session", loginResponse?.responseData?.sessionKey || '');
-
-      await this.validateUser(true);
-
-      console.log(this.isLogged);
-      if(this.isLogged)
-        this._router.navigateByUrl("/reports");
-
+    if(CurrentUser.getUser().id > 0){
+      this._toastrService.warning('Saia para entrar com outra conta.')
+      return;
     }
-    catch{
+
+    try {
+      this._loginService.login(authUser).subscribe(async loginResponse => {
+        if (this.invalidResponse(<BaseResponse<AuthSession>>loginResponse)) {
+          return;
+        }
+
+        localStorage.setItem("Session", loginResponse?.responseData?.sessionKey || '');
+        await this.validateUser(true);
+
+        if (this.isLogged)
+          this._router.navigateByUrl("/reports");
+      }, err => {
+        if (err.status = 401) {
+          this.ShowNotifications(<BaseResponse<unknown>>err.error);
+          return;
+        }
+        this.handleHttpError();
+
+      })
+    }
+    catch {
       this.handleHttpError();
     }
   }

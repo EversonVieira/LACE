@@ -45,7 +45,6 @@ namespace LACE.Core.Utility
                 {
 
                     byte[] buffer = File.ReadAllBytes(rpt.FilePath);
-
                     rpt.FileSource = Convert.ToBase64String(buffer);
 
                 }

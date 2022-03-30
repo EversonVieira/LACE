@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterContentInit, AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BaseComponent, CurrentUser } from 'src/shared/components/base-component';
 import { DTO_AuthUser_Register, DTO_AuthUser_Update } from 'src/shared/models/auth-user';
@@ -11,11 +11,11 @@ import { UserService } from 'src/shared/services/user.service';
 })
 export class UserUpdateComponent extends BaseComponent implements OnInit {
 
-  public userForm:FormGroup = new FormGroup({
-    name: new FormControl(CurrentUser.getUser().name),
-    cpf: new FormControl(CurrentUser.getUser().cpf),
-    rg: new FormControl(CurrentUser.getUser().rg),
-    email: new FormControl(CurrentUser.getUser().email),
+  public userForm: FormGroup = new FormGroup({
+    name: new FormControl(''),
+    cpf: new FormControl(''),
+    rg: new FormControl(''),
+    email: new FormControl(''),
     password: new FormControl(''),
     confirmPassword: new FormControl(''),
     oldPassword: new FormControl('')
@@ -23,9 +23,15 @@ export class UserUpdateComponent extends BaseComponent implements OnInit {
 
   constructor(private _userService: UserService) {
     super();
-   }
+  }
 
   ngOnInit(): void {
+    this.init();
+  }
+
+  async init(){
+    await this.validateUser();
+    this.applyCurrentUserToFormGroup();
   }
 
   onSubmit() {
@@ -49,8 +55,21 @@ export class UserUpdateComponent extends BaseComponent implements OnInit {
 
   }
 
-  
+  async applyCurrentUserToFormGroup() {
+    let applied:Boolean = false;
+
+    while(!applied){
+      this.userForm.get('name')?.setValue(CurrentUser.getUser().name);
+      this.userForm.get('cpf')?.setValue(CurrentUser.getUser().cpf);
+      this.userForm.get('rg')?.setValue(CurrentUser.getUser().rg);
+      this.userForm.get('email')?.setValue(CurrentUser.getUser().email);
+      applied = true;
+    }
+  }
+
   private formGroupToModel(authUser: DTO_AuthUser_Update) {
+    console.log(this.userForm);
+    authUser.id = this._currentUser.id;
     authUser.name = this.userForm.get('name')?.value;
     authUser.cpf = this.userForm.get('cpf')?.value;
     authUser.rg = this.userForm.get('rg')?.value;

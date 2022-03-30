@@ -1,4 +1,5 @@
-﻿using LACE.Core.Models;
+﻿using LACE.Core.ExtensionMethods;
+using LACE.Core.Models;
 using LACE.Core.Repository;
 using LACE.Core.Utility;
 using Microsoft.Extensions.Logging;
@@ -24,7 +25,38 @@ namespace LACE.Core.Business
 
         public Response<long> Insert(AuthUser model)
         {
-            Response<long> response =  _authUserRepository.Insert(model);
+            Response<long> response = new Response<long>();
+
+            BaseListRequest request = new BaseListRequest();
+            request.Filters.AddRange(new List<Filter>
+            {
+                new Filter
+                {
+                    Target1 = nameof(AuthUser.Cpf),
+                    OperationType = FilterOperationType.Equals,
+                    AggregateType = FilterAggregateType.OR,
+                    Value1 = model.Cpf.RemoveDotsAndDashes(),
+                },
+                new Filter
+                {
+                    Target1 = nameof(AuthUser.Rg),
+                    OperationType = FilterOperationType.Equals,
+                    AggregateType = FilterAggregateType.OR,
+                    Value1 = model.Rg.RemoveDotsAndDashes(),
+                }
+            });
+            ListResponse<AuthUser> userResponse = _authUserRepository.FindByRequest(request);
+
+
+            if (userResponse.IsValid || userResponse.ResponseData.Any())
+            {
+                response.AddValidationMessage("911", "CPF ou RG já cadastrados na base de dados, se não foi você, entre em contato com o suporte para recuperar acesso.");
+                _authUserRepository.CloseConnection();
+                return response;
+            }
+
+
+            response =  _authUserRepository.Insert(model);
             _authUserRepository.CloseConnection();
 
             return response;
