@@ -62,6 +62,7 @@ namespace LACE.Core.Auth
             if (users.InError)
             {
                 response.Merge(users);
+                _userRepository.CloseConnection();
                 return response;
             }
 
@@ -69,6 +70,7 @@ namespace LACE.Core.Auth
             {
                 response.AddValidationMessage("911", "Nenhum usuário encontrado!");
                 response.StatusCode = HttpStatusCode.Unauthorized;
+                _userRepository.CloseConnection();
                 return response;
             }
 
@@ -88,6 +90,7 @@ namespace LACE.Core.Auth
             if (sessionResponse.InError)
             {
                 response.Merge(sessionResponse);
+                _userRepository.CloseConnection();
                 return response;
             }
 
@@ -107,6 +110,7 @@ namespace LACE.Core.Auth
             if (session.IsNullOrEmpty())
             {
                 _logger.LogWarning("Session not provided and the code isn't supposed to reach here without a stored session");
+                _userRepository.CloseConnection();
                 return response;
             }
 
@@ -123,6 +127,7 @@ namespace LACE.Core.Auth
             if (sessionResponse.InError || !sessionResponse.ResponseData.Any())
             {
                 response.Merge(sessionResponse);
+                _userRepository.CloseConnection();
                 return response;
             }
 
@@ -139,6 +144,7 @@ namespace LACE.Core.Auth
             if (session.IsNullOrEmpty())
             {
                 _logger.LogWarning("Session not provided and the code isn't supposed to reach here without a stored session");
+                _userRepository.CloseConnection();
                 return response;
             }
 
@@ -155,12 +161,14 @@ namespace LACE.Core.Auth
             if (sessionResponse.InError)
             {
                 response.Merge(sessionResponse);
+                _userRepository.CloseConnection();
                 return response;
             }
 
             if (!sessionResponse.ResponseData.Any())
             {
                 response.AddValidationMessage("911", "Usuário não encontrado");
+                _userRepository.CloseConnection();
                 return response;
             }
 
@@ -176,12 +184,14 @@ namespace LACE.Core.Auth
             if (listResponse.HasAnyMessages)
             {
                 response.Merge(listResponse);
+                _userRepository.CloseConnection();
                 return response;
             }
 
             if (!listResponse.ResponseData.Any())
             {
                 response.AddValidationMessage("911", "Usuário não encontrado");
+                _userRepository.CloseConnection();
                 return response;
             }
 
@@ -198,6 +208,7 @@ namespace LACE.Core.Auth
             if (session.IsNullOrEmpty())
             {
                 _logger.LogWarning("Session not provided and the code isn't supposed to reach here without a stored session");
+                _userRepository.CloseConnection();
                 return response;
             }
 
@@ -214,20 +225,23 @@ namespace LACE.Core.Auth
             if (sessionResponse.InError)
             {
                 response.Merge(sessionResponse);
+                _userRepository.CloseConnection();
                 return response;
             }
 
             if (!sessionResponse.ResponseData.Any())
             {
                 response.AddValidationMessage("911", "Sessão inválida");
+                _userRepository.CloseConnection();
                 return response;
             }
 
             AuthSession currentSession = sessionResponse.ResponseData.First();
 
-            if(currentSession.LastRenewDate.AddMinutes(15) < DateTime.Now)
+            if (currentSession.LastRenewDate.AddMinutes(15) < DateTime.Now)
             {
                 response.AddValidationMessage("911", "Sessão inválida");
+                _userRepository.CloseConnection();
                 return response;
             }
 
