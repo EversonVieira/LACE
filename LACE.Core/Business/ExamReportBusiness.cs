@@ -126,9 +126,9 @@ namespace LACE.Core.Business
             ExamReportStorageUtility.GetFiles(examReportResponse.ResponseData, _logger);
 
             response = new ListResponse<DTO_ExamReport>();
+            response.ResponseData ??= new List<DTO_ExamReport>();
             foreach(ExamReport rpt in examReportResponse.ResponseData)
             {
-                response.ResponseData ??= new List<DTO_ExamReport>();
                 response.ResponseData.Add(ModelUtility.FromObj<ExamReport, DTO_ExamReport>(rpt));
             }
 

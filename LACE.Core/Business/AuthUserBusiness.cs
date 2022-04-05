@@ -48,7 +48,7 @@ namespace LACE.Core.Business
             ListResponse<AuthUser> userResponse = _authUserRepository.FindByRequest(request);
 
 
-            if (userResponse.IsValid || userResponse.ResponseData.Any())
+            if (!userResponse.IsValid || userResponse.ResponseData.Any())
             {
                 response.AddValidationMessage("911", "CPF ou RG já cadastrados na base de dados, se não foi você, entre em contato com o suporte para recuperar acesso.");
                 _authUserRepository.CloseConnection();
