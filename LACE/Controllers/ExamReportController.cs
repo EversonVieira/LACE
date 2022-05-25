@@ -40,6 +40,12 @@ namespace LACE.Controllers
             return GetResponse(() => _examReportBusiness.FindByUserId(userResponse.ResponseData.Id));
         }
 
+        [HttpGet]
+        public ActionResult<IResponse<List<DTO_ExamReport>>> GetByRegisterId([FromQuery] string registerId)
+        {
+            return GetResponse(() => _examReportBusiness.FindByRegisterId(registerId));
+        }
+
         [HttpPost]
         public ActionResult<IResponse<long>> Create(DTO_ExamReport report)
         {

@@ -143,5 +143,40 @@ namespace LACE.Core.Business
             _examReportRepository.CloseConnection();
             return response;
         }
+
+        public ListResponse<DTO_ExamReport> FindByRegisterId(string registerID)
+        {
+            ListResponse<DTO_ExamReport> response = new ListResponse<DTO_ExamReport>();
+
+            BaseListRequest request = new BaseListRequest();
+            request.Filters.AddRange(new List<Filter>
+            {
+                new Filter
+                {
+                    Target1 = "RegisterId",
+                    OperationType = FilterOperationType.Equals,
+                    AggregateType = FilterAggregateType.AND,
+                    Value1 = registerID
+                },
+            });
+
+            var examReportResponse = _examReportRepository.FindByRequest(request);
+
+            if (!response.IsValid)
+                return response;
+
+            ExamReportStorageUtility.GetFiles(examReportResponse.ResponseData, _logger);
+
+            response = new ListResponse<DTO_ExamReport>();
+            response.ResponseData ??= new List<DTO_ExamReport>();
+            foreach (ExamReport rpt in examReportResponse.ResponseData)
+            {
+                response.ResponseData.Add(ModelUtility.FromObj<ExamReport, DTO_ExamReport>(rpt));
+            }
+
+            response.ResponseData = response.ResponseData.OrderByDescending(x => x.UploadDate).ToList();
+            _examReportRepository.CloseConnection();
+            return response;
+        }
     }
 }
