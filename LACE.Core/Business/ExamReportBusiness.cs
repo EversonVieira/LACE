@@ -116,6 +116,13 @@ namespace LACE.Core.Business
                     AggregateType = FilterAggregateType.OR,
                     Value1 = user.Rg
                 },
+                new Filter
+                {
+                    Target1 = "PatientSUS",
+                    OperationType = FilterOperationType.Equals,
+                    AggregateType = FilterAggregateType.OR,
+                    Value1 = user.Sus
+                },
             });
 
             var examReportResponse = _examReportRepository.FindByRequest(request);

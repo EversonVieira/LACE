@@ -8,6 +8,7 @@ CREATE TABLE AuthUser(
     
     Cpf VARCHAR(20),
     Rg VARCHAR(20),
+    Sus VARCHAR(50),
     
 	Name VARCHAR(255),
     Email VARCHAR(255),
@@ -36,6 +37,7 @@ CREATE TABLE ExamReport(
     
     PatientCPF VARCHAR(20),
     PatientRG VARCHAR(20),
+    PatientSUS VARCHAR(50),
     
     ExamName VARCHAR(255),
     FileExtension VARCHAR(100),

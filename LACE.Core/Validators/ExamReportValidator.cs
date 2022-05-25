@@ -35,14 +35,22 @@ namespace LACE.Core.Validators
 
         private void ValidateCommon(IBaseResponse response, ExamReport report)
         {
-            if (report.PatientCPF.IsNullOrEmpty())
+            if (report.PatientSUS.Length > 20)
             {
-                response.AddValidationMessage("911", "'PatientCpf' é obrigatório.");
+                response.AddValidationMessage("911", "O tamanho máximo do campo PatientSUS é de 20 caracteres.");
+            }
+            if (report.PatientRG.Length > 20)
+            {
+                response.AddValidationMessage("911", "O tamanho máximo do campo PatientRG é de 20 caracteres.");
+            }
+            if (report.PatientSUS.Length > 20)
+            {
+                response.AddValidationMessage("911", "O tamanho máximo do campo PatientSUS é de 20 caracteres.");
             }
 
-            if (report.PatientRG.IsNullOrEmpty())
+            if (report.PatientSUS.IsNullOrEmpty() && report.PatientCPF.IsNullOrEmpty() && report.PatientRG.IsNullOrEmpty())
             {
-                response.AddValidationMessage("911", "'PatientRG' é obrigatório.");
+                response.AddValidationMessage("911", "Informe ao menos um dos campos a seguir: PatientSUS, PatientCPF, PatientRG.");
             }
         }
 

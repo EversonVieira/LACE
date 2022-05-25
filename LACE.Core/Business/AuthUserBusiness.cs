@@ -4,6 +4,7 @@ using LACE.Core.Repository;
 using LACE.Core.Utility;
 using Microsoft.Extensions.Logging;
 using Nedesk.Core.Models;
+using Nedesk.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,8 +44,35 @@ namespace LACE.Core.Business
                     OperationType = FilterOperationType.Equals,
                     AggregateType = FilterAggregateType.OR,
                     Value1 = model.Rg.RemoveDotsAndDashes(),
+                },
+                new Filter
+                {
+                    Target1 = nameof(AuthUser.Sus),
+                    OperationType = FilterOperationType.Equals,
+                    AggregateType = FilterAggregateType.OR,
+                    Value1 = model.Sus.RemoveDotsAndDashes(),
                 }
             });
+
+            if (model.Cpf.IsNullOrEmpty() && model.Rg.IsNullOrEmpty() && model.Sus.IsNullOrEmpty())
+            {
+                response.AddValidationMessage("911", "Informe pelo menos um dos campos a seguir: CPF, RG ou SUS");
+                _authUserRepository.CloseConnection();
+                return response;
+            }
+
+            if (model.Sus.Length > 20)
+            {
+                response.AddValidationMessage("911", "O tamanho máximo do campo Sus é de 20 caracteres.");
+            }
+            if (model.Rg.Length > 20)
+            {
+                response.AddValidationMessage("911", "O tamanho máximo do campo Rg é de 20 caracteres.");
+            }
+            if (model.Cpf.Length > 20)
+            {
+                response.AddValidationMessage("911", "O tamanho máximo do campo Cpf é de 20 caracteres.");
+            }
             ListResponse<AuthUser> userResponse = _authUserRepository.FindByRequest(request);
 
 

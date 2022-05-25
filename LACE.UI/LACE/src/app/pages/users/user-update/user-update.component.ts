@@ -15,6 +15,7 @@ export class UserUpdateComponent extends BaseComponent implements OnInit {
     name: new FormControl(''),
     cpf: new FormControl(''),
     rg: new FormControl(''),
+    sus: new FormControl(''),
     email: new FormControl(''),
     password: new FormControl(''),
     confirmPassword: new FormControl(''),
@@ -62,6 +63,7 @@ export class UserUpdateComponent extends BaseComponent implements OnInit {
       this.userForm.get('name')?.setValue(CurrentUser.getUser().name);
       this.userForm.get('cpf')?.setValue(CurrentUser.getUser().cpf);
       this.userForm.get('rg')?.setValue(CurrentUser.getUser().rg);
+      this.userForm.get('sus')?.setValue(CurrentUser.getUser().sus);
       this.userForm.get('email')?.setValue(CurrentUser.getUser().email);
       applied = true;
     }
@@ -73,6 +75,7 @@ export class UserUpdateComponent extends BaseComponent implements OnInit {
     authUser.name = this.userForm.get('name')?.value;
     authUser.cpf = this.userForm.get('cpf')?.value;
     authUser.rg = this.userForm.get('rg')?.value;
+    authUser.sus = this.userForm.get('sus')?.value;
     authUser.email = this.userForm.get('email')?.value;
     authUser.oldPassword = this.userForm.get('oldPassword')?.value;
     authUser.password = this.userForm.get('password')?.value;

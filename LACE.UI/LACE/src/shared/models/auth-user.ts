@@ -7,6 +7,7 @@ export class AuthUser extends BaseModel {
     password:string = '';
     cpf:string = '';
     rg:string = '';
+    sus: string = '';
     roles:Role[] = [];
     isActive:boolean = false;
     isLocked:boolean = false;

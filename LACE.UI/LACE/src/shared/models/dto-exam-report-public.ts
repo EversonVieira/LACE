@@ -3,6 +3,7 @@
         sourceExamId: string = '';
         patientCpf: string = '';
         patientRG: string = '';
+        patientSus: string = '';
         examName: string = '';
         fileExtension: string = '';
         fileSource: string = '';

@@ -26,7 +26,12 @@
                         <label for="rg">RG: </label>
                         <input class="form-control" id="rg" type="text" formControlName="rg">
                     </div>
-            
+
+                    <div class="form-group pt-3">
+                      <label for="sus">SUS: </label>
+                      <input class="form-control" id="sus" type="text" [mask]="'000000000000000'" formControlName="sus">
+                    </div>
+
                     <div class="form-group pt-3">
                         <label for="password">Senha: </label>
                         <input class="form-control" id="password" type="password" formControlName="password">

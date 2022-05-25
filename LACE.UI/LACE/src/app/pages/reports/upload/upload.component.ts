@@ -17,6 +17,7 @@ export class UploadComponent extends BaseComponent implements OnInit {
     examName: new FormControl(''),
     patientCpf: new FormControl(''),
     patientRG: new FormControl(''),
+    patientSUS: new FormControl(''),
     examDate: new FormControl(''),
   });
 

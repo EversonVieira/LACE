@@ -7,6 +7,7 @@ namespace LACE.Core.Models
     {
         public string Cpf { get; set; }
         public string Rg { get; set; }
+        public string Sus { get; set; }
     }
 
 }

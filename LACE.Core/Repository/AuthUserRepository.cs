@@ -18,10 +18,10 @@ namespace LACE.Core.Repository
     public class AuthUserRepository : BaseRepository
     {
         private string SELECT_SQL = 
-@$"SELECT Id, Cpf, Rg, Name, Email, Password, IsActive, IsLocked, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn FROM AuthUser ";
+@$"SELECT Id, Cpf, Rg, Sus, Name, Email, Password, IsActive, IsLocked, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn FROM AuthUser ";
 
         private string INSERT_SQL =
-$@"INSERT INTO AuthUser(Cpf, Rg, Name, Email, Password, IsActive, IsLocked, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn)
+$@"INSERT INTO AuthUser(Cpf, Rg, Sus, Name, Email, Password, IsActive, IsLocked, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn)
 VALUES(@Cpf, @Rg, @Name, @Email, @Password, @IsActive, @IsLocked, @CreatedBy, @ModifiedBy, @CreatedOn, @ModifiedOn); SELECT LAST_INSERT_ID();";
 
         private string UPDATE_SQL =
@@ -44,6 +44,7 @@ WHERE Id = @Id";
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add($@"@{nameof(AuthUser.Cpf)}", user.Cpf);
                 parameters.Add($@"@{nameof(AuthUser.Rg)}", user.Rg);
+                parameters.Add($@"@{nameof(AuthUser.Sus)}", user.Sus);
                 parameters.Add($@"@{nameof(AuthUser.Name)}", user.Name);
                 parameters.Add($@"@{nameof(AuthUser.Email)}", user.Email);
                 parameters.Add($@"@{nameof(AuthUser.Password)}", user.Password);

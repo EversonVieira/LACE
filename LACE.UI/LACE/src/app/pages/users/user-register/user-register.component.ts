@@ -15,6 +15,7 @@ export class UserRegisterComponent extends BaseComponent implements OnInit {
     name: new FormControl(''),
     cpf: new FormControl(''),
     rg: new FormControl(''),
+    sus: new FormControl(''),
     email: new FormControl(''),
     password: new FormControl(''),
     confirmPassword: new FormControl('')
@@ -52,9 +53,9 @@ export class UserRegisterComponent extends BaseComponent implements OnInit {
     authUser.name = this.userForm.get('name')?.value;
     authUser.cpf = this.userForm.get('cpf')?.value;
     authUser.rg = this.userForm.get('rg')?.value;
+    authUser.sus = this.userForm.get('sus')?.value;
     authUser.email = this.userForm.get('email')?.value;
     authUser.password = this.userForm.get('password')?.value;
     authUser.confirmPassword = this.userForm.get('confirmPassword')?.value;
-    console.log(authUser);
   }
 }
