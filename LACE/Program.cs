@@ -1,11 +1,17 @@
 using LACE.Core.Adapter;
 using LACE.Core.Auth;
 using LACE.Core.Business;
+using LACE.Core.Helper;
+using LACE.Core.Helper.Configuration;
+using LACE.Core.Models;
 using LACE.Core.Repository;
 using LACE.Core.Validators;
 using Microsoft.OpenApi.Models;
+using Nedesk.Core;
 using Nedesk.Core.DataBase.Factory;
 using Nedesk.Core.Interfaces;
+using Nedesk.Core.MiddleWare.Extensions;
+using Nedesk.Core.Security.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,10 +23,10 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.AddSecurityDefinition("Session", new OpenApiSecurityScheme
+    c.AddSecurityDefinition("NDToken", new OpenApiSecurityScheme
     {
-        Description = @"Session of the current logged user.",
-        Name = "Session",
+        Description = @"NDToken of the current logged user.",
+        Name = "NDToken",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
     });
@@ -32,9 +38,9 @@ builder.Services.AddSwaggerGen(c =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = "Session"
+                    Id = "NDToken"
                 },
-                Name = "Session",
+                Name = "NDToken",
                 In = ParameterLocation.Header,
             },
             new List<string>()
@@ -45,8 +51,9 @@ builder.Services.AddSwaggerGen(c =>
 BuildCoreServices(builder);
 BuildServices(builder);
 
-var app = builder.Build();
 
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -58,6 +65,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseNDAuthentication<TokenPayload>();
 
 app.MapControllers();
 
@@ -78,12 +87,26 @@ void BuildCoreServices(WebApplicationBuilder builder)
 
 void BuildServices(WebApplicationBuilder builder)
 {
+    // Configuration
+    NDTokenConfiguration tokenConfiguration = new NDTokenConfiguration();
+    builder.Configuration.GetSection("TokenConfiguration").Bind(tokenConfiguration);
+    builder.Services.AddSingleton(x => tokenConfiguration);
+
+    LoginHelperConfiguration helperConfiguration = new LoginHelperConfiguration();
+    builder.Configuration.GetSection("LoginHelperConfiguration").Bind(helperConfiguration);
+    builder.Services.AddSingleton(x => helperConfiguration);
+    StartupConfiguration.AddNDAuthentication<AuthUser, TokenPayload>(builder.Services);
+    builder.Services.AddScoped<NDIAuthenticationService<AuthUser, TokenPayload>, AuthService>();
+
+
+    // Helpers
+    builder.Services.AddSingleton<LoginHelper>();
+
     // SQL Connection
-    builder.Services.AddScoped<IDBConnectionFactory, MySqlConnectionFactory>(x => new MySqlConnectionFactory(builder.Configuration.GetConnectionString("mysql")));
+    builder.Services.AddScoped<NDIDBConnectionFactory, NDMySqlConnectionFactory>(x => new NDMySqlConnectionFactory(builder.Configuration.GetConnectionString("mysql")));
 
     // Repositories
     builder.Services.AddScoped<AuthUserRepository>();
-    builder.Services.AddScoped<AuthSessionRepository>();
     builder.Services.AddScoped<ExamReportRepository>();
 
     // Business 
@@ -93,12 +116,9 @@ void BuildServices(WebApplicationBuilder builder)
     // Adapter
     builder.Services.AddScoped<AuthUserAdapter>();
 
-
-    // Services
-    builder.Services.AddScoped<IAuth, AuthService>();
-
     // Validators
     builder.Services.AddScoped<ExamReportValidator>();
+    builder.Services.AddScoped<AuthUserValidator>();
 
 
 }

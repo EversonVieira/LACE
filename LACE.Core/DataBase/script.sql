@@ -34,6 +34,7 @@ CREATE TABLE ExamReport(
     UserId INT,
     SourcePatientID VARCHAR(255),
     SourceExamId VARCHAR(255),
+    RegisterId VARCHAR(1000),
     
     PatientCPF VARCHAR(20),
     PatientRG VARCHAR(20),

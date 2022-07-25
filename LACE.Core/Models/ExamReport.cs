@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LACE.Core.Models
 {
-    public class ExamReport : BaseModel
+    public class ExamReport : NDBaseModel
     {
         public long UserId { get; set; }
         public string RegisterId { get; set; }

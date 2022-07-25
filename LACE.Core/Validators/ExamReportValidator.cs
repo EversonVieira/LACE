@@ -9,48 +9,48 @@ namespace LACE.Core.Validators
 {
     public class ExamReportValidator
     {
-        private readonly AuthUserRepository _userRepository;
+        private readonly ExamReportRepository _examReportRepository;
         private readonly ILogger _logger;
 
-        public ExamReportValidator(AuthUserRepository userRepository, ILogger<AuthUserValidator> logger)
+        public ExamReportValidator(ExamReportRepository examReportRepository, ILogger<ExamReportValidator> logger)
         {
-            _userRepository = userRepository;
+            _examReportRepository = examReportRepository;
             _logger = logger;
         }
 
-        public void ValidateInsert(IBaseResponse response, ExamReport report)
+        public void ValidateInsert(NDResponse NDResponse, ExamReport report)
         {
-            ValidateCommon(response, report);
+            ValidateCommon(NDResponse, report);
         }
 
-        public void ValidateUpdate(IBaseResponse response, ExamReport report)
+        public void ValidateUpdate(NDResponse NDResponse, ExamReport report)
         {
-            ValidateCommon(response, report);
+            ValidateCommon(NDResponse, report);
 
         }
-        public void ValidateDelete(IBaseResponse response, ExamReport report)
+        public void ValidateDelete(NDResponse NDResponse, ExamReport report)
         {
-            ValidateCommon(response, report);
+            ValidateCommon(NDResponse, report);
         }
 
-        private void ValidateCommon(IBaseResponse response, ExamReport report)
+        private void ValidateCommon(NDResponse NDResponse, ExamReport report)
         {
             if (report.PatientSUS.Length > 20)
             {
-                response.AddValidationMessage("911", "O tamanho máximo do campo PatientSUS é de 20 caracteres.");
+                NDResponse.AddValidationMessage("911", "O tamanho máximo do campo PatientSUS é de 20 caracteres.");
             }
             if (report.PatientRG.Length > 20)
             {
-                response.AddValidationMessage("911", "O tamanho máximo do campo PatientRG é de 20 caracteres.");
+                NDResponse.AddValidationMessage("911", "O tamanho máximo do campo PatientRG é de 20 caracteres.");
             }
             if (report.PatientSUS.Length > 20)
             {
-                response.AddValidationMessage("911", "O tamanho máximo do campo PatientSUS é de 20 caracteres.");
+                NDResponse.AddValidationMessage("911", "O tamanho máximo do campo PatientSUS é de 20 caracteres.");
             }
 
             if (report.PatientSUS.IsNullOrEmpty() && report.PatientCPF.IsNullOrEmpty() && report.PatientRG.IsNullOrEmpty())
             {
-                response.AddValidationMessage("911", "Informe ao menos um dos campos a seguir: PatientSUS, PatientCPF, PatientRG.");
+                NDResponse.AddValidationMessage("911", "Informe ao menos um dos campos a seguir: PatientSUS, PatientCPF, PatientRG.");
             }
         }
 

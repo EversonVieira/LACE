@@ -1,258 +1,81 @@
-﻿using LACE.Core.Models;
+﻿using LACE.Core.Messages;
+using LACE.Core.Models;
 using LACE.Core.Repository;
 using LACE.Core.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Nedesk.Core.DataBase.Factory;
 using Nedesk.Core.Interfaces;
 using Nedesk.Core.Models;
+using Nedesk.Core.Security.Models;
 using Nedesk.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace LACE.Core.Auth
 {
-    public class AuthService : IAuth
+    public class AuthService : NDIAuthenticationService<AuthUser, TokenPayload>
     {
-        private readonly AuthSessionRepository _sessionRepository;
         private readonly AuthUserRepository _userRepository;
-        private readonly ILogger _logger;
+        private readonly NDITokenService<TokenPayload> _tokenService;
+        private readonly NDIDBConnectionFactory _connectionFactory;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ILogger _logger;
 
-        public AuthService(AuthSessionRepository sessionRepository,
-                           AuthUserRepository userRepository,
+        public AuthService(AuthUserRepository userRepository,
+                           NDITokenService<TokenPayload> tokenService,
+                           NDIDBConnectionFactory connectionFactory,
                            IHttpContextAccessor httpContextAccessor,
-                           ILogger<AuthSessionRepository> logger)
+                           ILogger<AuthService> logger)
         {
-            _sessionRepository = sessionRepository;
             _userRepository = userRepository;
+            _tokenService = tokenService;
+            _connectionFactory = connectionFactory;
             _contextAccessor = httpContextAccessor;
             _logger = logger;
         }
 
 
-        public Response<Nedesk.Core.Interfaces.ISession> CreateSession(IAuthUser user)
+        public NDResponse<AuthUser> GetTokenUser(NDToken<TokenPayload> token) 
         {
-            Response<Nedesk.Core.Interfaces.ISession> response = new Response<Nedesk.Core.Interfaces.ISession>();
-
-            BaseListRequest request = new BaseListRequest();
-            request.Filters.AddRange(new List<Filter>()
+            NDResponse<AuthUser> response = new NDResponse<AuthUser>();
+            TokenPayload? payload = JsonSerializer.Deserialize<TokenPayload>(token.Payload);
+            if (payload == null)
             {
-                new Filter
+                response.AddValidationMessage(MessageCodesList.Get("LCEAUTH001"));
+                return response;
+            }
+
+            using (DbConnection connection = _connectionFactory.GetReadOnlyConnection())
+            {
+                NDListRequest request = new NDListRequest();
+                request.Filters.Add(new NDFilter
                 {
-                    Target1 = nameof(AuthUser.Email),
-                    OperationType = FilterOperationType.Equals,
-                    Value1 = user.Email,
-                    AggregateType = FilterAggregateType.AND,
+                    Target1 = "Email",
+                    OperationType = Nedesk.Core.Enums.NDFilterOperationTypeEnum.Equals,
+                    Value1 = payload.Login
 
-                },
-                new Filter
+                });
+
+                NDListResponse<AuthUser> authUser = _userRepository.FindByRequest(connection, request);
+
+                if (authUser.HasAnyMessages || !authUser.ResponseData.Any())
                 {
-                    Target1 = nameof(AuthUser.Password),
-                    OperationType = FilterOperationType.Equals,
-                    Value1 = LoginUtility.EncryptPassword(user.Password),
-                    AggregateType = FilterAggregateType.AND,
-                },
-            });
+                    response.AddValidationMessage(MessageCodesList.Get("LCEAUTH001"));
+                    return response;
+                }
 
-            ListResponse<AuthUser> users = _userRepository.FindByRequest(request);
-            if (users.InError)
-            {
-                response.Merge(users);
-                _userRepository.CloseConnection();
-                return response;
+                response.ResponseData = authUser.ResponseData.First();
             }
 
-            if (!users.ResponseData.Any())
-            {
-                response.AddValidationMessage("911", "Nenhum usuário encontrado!");
-                response.StatusCode = HttpStatusCode.Unauthorized;
-                _userRepository.CloseConnection();
-                return response;
-            }
-
-            AuthUser searchUser = users.ResponseData.First();
-
-            string sessionKey = LoginUtility.GenerateSession(searchUser);
-
-            AuthSession session = new AuthSession()
-            {
-                UserId = searchUser.Id,
-                SessionKey = sessionKey,
-                LastRenewDate = DateTime.Now
-            };
-
-            var sessionResponse = _sessionRepository.Insert(session);
-
-            if (sessionResponse.InError)
-            {
-                response.Merge(sessionResponse);
-                _userRepository.CloseConnection();
-                return response;
-            }
-
-            session.Id = sessionResponse.ResponseData;
-            response.ResponseData = session;
-
-            response.AddInformationMessage("911", "Logado com sucesso!");
-
-            _userRepository.CloseConnection();
             return response;
         }
-
-        public Response<bool> DropSession()
-        {
-            Response<bool> response = new Response<bool>();
-            string session = _contextAccessor.HttpContext.Request.Headers["Session"];
-            if (session.IsNullOrEmpty())
-            {
-                _logger.LogWarning("Session not provided and the code isn't supposed to reach here without a stored session");
-                _userRepository.CloseConnection();
-                return response;
-            }
-
-            BaseListRequest sessionRequest = new BaseListRequest();
-            sessionRequest.Filters.Add(new Filter()
-            {
-                Target1 = "SessionKey",
-                OperationType = FilterOperationType.Equals,
-                Value1 = session
-            });
-
-
-            var sessionResponse = _sessionRepository.FindByRequest(sessionRequest);
-            if (sessionResponse.InError || !sessionResponse.ResponseData.Any())
-            {
-                response.Merge(sessionResponse);
-                _userRepository.CloseConnection();
-                return response;
-            }
-
-            _sessionRepository.CloseConnection();
-            var removeResponse = _sessionRepository.DeleteById(sessionResponse.ResponseData.First().Id);
-            return removeResponse;
-        }
-
-        public Response<IAuthUser> GetSessionUser()
-        {
-            Response<IAuthUser> response = new Response<IAuthUser>();
-
-            string session = _contextAccessor.HttpContext.Request.Headers["Session"];
-            if (session.IsNullOrEmpty())
-            {
-                _logger.LogWarning("Session not provided and the code isn't supposed to reach here without a stored session");
-                _userRepository.CloseConnection();
-                return response;
-            }
-
-            BaseListRequest sessionRequest = new BaseListRequest();
-            sessionRequest.Filters.Add(new Filter()
-            {
-                Target1 = "SessionKey",
-                OperationType = FilterOperationType.Equals,
-                Value1 = session
-            });
-
-
-            var sessionResponse = _sessionRepository.FindByRequest(sessionRequest);
-            if (sessionResponse.InError)
-            {
-                response.Merge(sessionResponse);
-                _userRepository.CloseConnection();
-                return response;
-            }
-
-            if (!sessionResponse.ResponseData.Any())
-            {
-                response.AddValidationMessage("911", "Usuário não encontrado");
-                _userRepository.CloseConnection();
-                return response;
-            }
-
-            BaseListRequest request = new BaseListRequest();
-            request.Filters.Add(new Filter
-            {
-                Target1 = "Id",
-                OperationType = FilterOperationType.Equals,
-                Value1 = sessionResponse.ResponseData.First().UserId
-            });
-
-            var listResponse = _userRepository.FindByRequest(request);
-            if (listResponse.HasAnyMessages)
-            {
-                response.Merge(listResponse);
-                _userRepository.CloseConnection();
-                return response;
-            }
-
-            if (!listResponse.ResponseData.Any())
-            {
-                response.AddValidationMessage("911", "Usuário não encontrado");
-                _userRepository.CloseConnection();
-                return response;
-            }
-
-            response.ResponseData = listResponse.ResponseData.First();
-            response.StatusCode = HttpStatusCode.OK;
-            _sessionRepository.CloseConnection();
-            return response;
-        }
-
-        public Response<bool> ValidateSession()
-        {
-            Response<bool> response = new Response<bool>();
-            string session = _contextAccessor.HttpContext.Request.Headers["Session"];
-            if (session.IsNullOrEmpty())
-            {
-                _logger.LogWarning("Session not provided and the code isn't supposed to reach here without a stored session");
-                _userRepository.CloseConnection();
-                return response;
-            }
-
-            BaseListRequest sessionRequest = new BaseListRequest();
-            sessionRequest.Filters.Add(new Filter()
-            {
-                Target1 = "SessionKey",
-                OperationType = FilterOperationType.Equals,
-                Value1 = session
-            });
-
-
-            var sessionResponse = _sessionRepository.FindByRequest(sessionRequest);
-            if (sessionResponse.InError)
-            {
-                response.Merge(sessionResponse);
-                _userRepository.CloseConnection();
-                return response;
-            }
-
-            if (!sessionResponse.ResponseData.Any())
-            {
-                response.AddValidationMessage("911", "Sessão inválida");
-                _userRepository.CloseConnection();
-                return response;
-            }
-
-            AuthSession currentSession = sessionResponse.ResponseData.First();
-
-            if (currentSession.LastRenewDate.AddMinutes(15) < DateTime.Now)
-            {
-                response.AddValidationMessage("911", "Sessão inválida");
-                _userRepository.CloseConnection();
-                return response;
-            }
-
-            currentSession.LastRenewDate = DateTime.Now;
-            _sessionRepository.Update(currentSession);
-
-            response.ResponseData = true;
-            response.StatusCode = HttpStatusCode.OK;
-
-            _sessionRepository.CloseConnection();
-            return response;
-        }
+       
     }
 }

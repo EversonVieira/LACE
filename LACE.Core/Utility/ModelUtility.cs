@@ -18,7 +18,7 @@ namespace LACE.Core.Utility
             var properties = typeof(T).GetProperties();
             foreach (PropertyInfo prop in properties)
             {
-                if (prop.SetMethod.IsNull()) continue;
+                if (prop.SetMethod is null) continue;
 
                 if (reader.GetColumnSchema().ToList().Exists(x => x.ColumnName.Equals(prop.Name)) && reader[prop.Name] != DBNull.Value)
                 {
@@ -39,9 +39,9 @@ namespace LACE.Core.Utility
 
             foreach (PropertyInfo prop in outputProperties)
             {
-                if (prop.SetMethod.IsNotNull() && inputProperties.Exists(x => x.Name.Equals(prop.Name)))
+                if (prop.SetMethod is null && inputProperties.Exists(x => x.Name.Equals(prop.Name)))
                 {
-                    prop.SetValue(output, inputProperties.FirstOrDefault(x => x.Name.Equals(prop.Name)).GetValue(obj));
+                    prop.SetValue(output, inputProperties.First(x => x.Name.Equals(prop.Name)).GetValue(obj));
                 }
             }
 

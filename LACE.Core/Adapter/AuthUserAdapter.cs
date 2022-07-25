@@ -1,8 +1,11 @@
 ﻿using LACE.Core.Business;
+using LACE.Core.Helper;
+using LACE.Core.Messages;
 using LACE.Core.Models;
 using LACE.Core.Models.DTO;
 using LACE.Core.Utility;
 using Microsoft.Extensions.Logging;
+using Nedesk.Core.Enums;
 using Nedesk.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -15,63 +18,68 @@ namespace LACE.Core.Adapter
     public class AuthUserAdapter
     {
         private readonly AuthUserBusiness _authUserBusiness;
+        private readonly LoginHelper _loginHelper;
         private readonly ILogger _logger;
-        public AuthUserAdapter(AuthUserBusiness authUserBusiness, ILogger<AuthUserAdapter> logger)
+        public AuthUserAdapter(AuthUserBusiness authUserBusiness, 
+                               LoginHelper helper, 
+                               ILogger<AuthUserAdapter> logger)
         {
             _authUserBusiness = authUserBusiness;
+            _loginHelper = helper;
             _logger = logger;
         }
 
-        public Response<long> Insert(DTO_AuthUser_Register model)
+        public NDResponse<long> Insert(DTO_AuthUser_Register model)
         {
-            Response<long> response = new Response<long>();
+            NDResponse<long> NDResponse = new NDResponse<long>();
             if (!model.Password.Equals(model.ConfirmPassword))
             {
-                response.AddValidationMessage("911", "Senhas não são iguais");
-                return response;
+                NDResponse.AddValidationMessage(MessageCodesList.Get("LCEAUTH002"));
+                return NDResponse;
             }
 
-            model.Password = LoginUtility.EncryptPassword(model.Password);
+            _loginHelper.EncrpytUserSensistiveInformation(model);
+
             return _authUserBusiness.Insert(model);
         }
 
-        public Response<bool> Update(DTO_AuthUser_Update model)
+        public NDResponse<bool> Update(DTO_AuthUser_Update model)
         {
-            Response<bool> response = new Response<bool>();
+            NDResponse<bool> NDResponse = new NDResponse<bool>();
             if (!model.Password.Equals(model.ConfirmPassword))
             {
-                response.AddValidationMessage("911", "Senhas não correspondem.");
-                return response;
+                NDResponse.AddValidationMessage(MessageCodesList.Get("LCEAUTH002"));
+                return NDResponse;
             }
 
-            model.Password = LoginUtility.EncryptPassword(model.Password);
-            BaseListRequest request = new BaseListRequest();
-            request.Filters.AddRange(new List<Filter>
+            _loginHelper.EncrpytUserSensistiveInformation(model);
+            NDListRequest request = new NDListRequest();
+            request.Filters.AddRange(new List<NDFilter>
             {
-                new Filter
+                new NDFilter
                 {
                     Target1 = "Email",
-                    OperationType = FilterOperationType.Equals,
+                    OperationType = NDFilterOperationTypeEnum.Equals,
                     Value1 = model.Email,
-                    AggregateType = FilterAggregateType.AND
+                    AggregateType = NDFilterAggregateTypeEnum.AND
                 },
 
-                new Filter
+                new NDFilter
                 {
                     Target1 = "Password",
-                    OperationType = FilterOperationType.Equals,
+                    OperationType = NDFilterOperationTypeEnum.Equals,
                     Value1 = model.Password
                 }
             });
-            var findResponse = _authUserBusiness.FindByRequest(request);
+            var findNDResponse = _authUserBusiness.FindByRequest(request);
 
-            if (!findResponse.ResponseData.Any())
+            if (!findNDResponse.ResponseData.Any())
             {
-                response.AddValidationMessage("911", "Não foi possível atualizar o usuário pois a senha anterior não corresponde a última senha.");
-                return response;
+                NDResponse.AddValidationMessage(MessageCodesList.Get("LCEAUTH003"));
+                return NDResponse;
             }
 
-            model.Id = findResponse.ResponseData.First().Id;
+            model.Id = findNDResponse.ResponseData.First().Id;
 
             return _authUserBusiness.Update(model);
         }

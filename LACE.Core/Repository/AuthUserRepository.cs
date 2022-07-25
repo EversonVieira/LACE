@@ -22,7 +22,7 @@ namespace LACE.Core.Repository
 
         private string INSERT_SQL =
 $@"INSERT INTO AuthUser(Cpf, Rg, Sus, Name, Email, Password, IsActive, IsLocked, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn)
-VALUES(@Cpf, @Rg, @Name, @Email, @Password, @IsActive, @IsLocked, @CreatedBy, @ModifiedBy, @CreatedOn, @ModifiedOn); SELECT LAST_INSERT_ID();";
+VALUES(@Cpf, @Rg, @Sus, @Name, @Email, @Password, @IsActive, @IsLocked, @CreatedBy, @ModifiedBy, @CreatedOn, @ModifiedOn); SELECT LAST_INSERT_ID();";
 
         private string UPDATE_SQL =
 $@"UPDATE AuthUser SET Name = @Name, Password = @Password, IsActive = @IsActive, IsLocked = @IsLocked,
@@ -30,14 +30,14 @@ CreatedBy = @CreatedBy, ModifiedBy = @ModifiedBy, CreatedOn = @CreatedOn, Modifi
 WHERE Id = @Id";
 
 
-        public AuthUserRepository(IDBConnectionFactory dBConnectionFactory, ILogger<BaseRepository> logger) : base(dBConnectionFactory, logger)
+        public AuthUserRepository(ILogger<BaseRepository> logger) : base(logger)
         {
 
         }
 
-        public Response<long> Insert(AuthUser user)
+        public NDResponse<long> Insert(DbConnection connection,AuthUser user)
         {
-            Response<long> response = new Response<long>();
+            NDResponse<long> NDResponse = new NDResponse<long>();
 
             try
             {
@@ -52,24 +52,24 @@ WHERE Id = @Id";
                 parameters.Add($@"@{nameof(AuthUser.IsLocked)}", user.IsLocked);
                 base.AddBaseModelParameters(parameters, user);
                 
-                using (DbCommand cmd = CreateCommand(INSERT_SQL, parameters))
+                using (DbCommand cmd = CreateCommand(connection, INSERT_SQL, parameters))
                 {
-                    response.ResponseData = ExecuteScalar(cmd);
-                    response.StatusCode = HttpStatusCode.Created;
+                    NDResponse.ResponseData = ExecuteScalar(cmd);
+                    NDResponse.StatusCode = HttpStatusCode.Created;
                 }
 
             }
             catch (Exception ex)
             {
-                base.HandleWithException(response, ex);
+                base.HandleWithException(NDResponse, ex);
             }
 
-            return response;
+            return NDResponse;
         }
 
-        public Response<bool> Update(AuthUser user)
+        public NDResponse<bool> Update(DbConnection connection, AuthUser user)
         {
-            Response<bool> response = new();
+            NDResponse<bool> NDResponse = new();
 
             try
             {
@@ -82,68 +82,68 @@ WHERE Id = @Id";
                 parameters.Add($@"@{nameof(AuthUser.IsLocked)}", user.IsLocked);
                 base.AddBaseModelParameters(parameters, user);
 
-                using (DbCommand cmd = CreateCommand(UPDATE_SQL, parameters))
+                using (DbCommand cmd = CreateCommand(connection, UPDATE_SQL, parameters))
                 {
                     ExecuteNonQuery(cmd);
-                    response.ResponseData = true;
-                    response.StatusCode = HttpStatusCode.OK;
+                    NDResponse.ResponseData = true;
+                    NDResponse.StatusCode = HttpStatusCode.OK;
                 }
 
             }
             catch (Exception ex)
             {
-                base.HandleWithException(response, ex);
+                base.HandleWithException(NDResponse, ex);
             }
 
-            return response;
+            return NDResponse;
         }
 
-        public ListResponse<AuthUser> FindByRequest(BaseListRequest request)
+        public NDListResponse<AuthUser> FindByRequest(DbConnection connection, NDListRequest request)
         {
-            ListResponse<AuthUser> response = new();
-            response.ResponseData ??= new();
+            NDListResponse<AuthUser> NDResponse = new();
+            NDResponse.ResponseData ??= new();
 
             try
             {
                 string sql = $"{SELECT_SQL} {RetrieveFilterWhereClause(request.Filters)}";
 
-                using (DbCommand cmd = CreateCommand(sql.ToString(), RetrieveFilterParameters(request.Filters)))
+                using (DbCommand cmd = CreateCommand(connection, sql.ToString(), RetrieveFilterParameters(request.Filters)))
                 {
                     using (DbDataReader reader = ExecuteReader(cmd).ResponseData)
                     {
                         while (reader.Read())
                         {
-                            response.ResponseData.Add(ModelUtility.FillObject<AuthUser>(reader));
+                            NDResponse.ResponseData.Add(ModelUtility.FillObject<AuthUser>(reader));
                         }
                     }
                 }
 
-                response.StatusCode = HttpStatusCode.OK;
+                NDResponse.StatusCode = HttpStatusCode.OK;
 
             }
             catch(Exception ex)
             {
-                base.HandleWithException(response, ex);
+                base.HandleWithException(NDResponse, ex);
             }
 
 
-            return response;
+            return NDResponse;
         }
 
-        public ListResponse<AuthUser> FindAll()
+        public NDListResponse<AuthUser> FindAll(DbConnection connection)
         {
-            ListResponse<AuthUser> response = new();
-            response.ResponseData ??= new();
+            NDListResponse<AuthUser> NDResponse = new();
+            NDResponse.ResponseData ??= new();
 
             try
             {
-                using (DbCommand cmd = CreateCommand(SELECT_SQL))
+                using (DbCommand cmd = CreateCommand(connection, SELECT_SQL))
                 {
                     using (DbDataReader reader = ExecuteReader(cmd).ResponseData)
                     {
                         while (reader.Read())
                         {
-                            response.ResponseData.Add(ModelUtility.FillObject<AuthUser>(reader));
+                            NDResponse.ResponseData.Add(ModelUtility.FillObject<AuthUser>(reader));
                         }
                     }
                 }
@@ -151,11 +151,11 @@ WHERE Id = @Id";
             }
             catch (Exception ex)
             {
-                base.HandleWithException(response, ex);
+                base.HandleWithException(NDResponse, ex);
             }
 
 
-            return response;
+            return NDResponse;
         }
     }
 }

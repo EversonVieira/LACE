@@ -20,8 +20,8 @@ namespace LACE.Core.Repository
 $@"SELECT Id, UserId, SourcePatientId, SourceExamId, PatientCPF, PatientRG, ExamName, FileExtension, FilePath, ExamDate, UploadDate, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn FROM ExamReport";
 
         private string INSERT_SQL =
-$@"INSERT INTO ExamReport(UserId, SourcePatientId, SourceExamId, PatientCpf, PatientRG, ExamName, FileExtension, FilePath, ExamDate, UploadDate, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn)
-VALUES(@UserId, @SourcePatientId, @SourceExamId, @PatientCpf, @PatientRG, @ExamName, @FileExtension, @FilePath, @ExamDate, @UploadDate, @CreatedBy, @ModifiedBy, @CreatedOn, @ModifiedOn); SELECT LAST_INSERT_ID()";
+$@"INSERT INTO ExamReport(UserId, RegisterId, SourcePatientId, SourceExamId, PatientCpf, PatientRG, ExamName, FileExtension, FilePath, ExamDate, UploadDate, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn)
+VALUES(@UserId, @RegisterId, @SourcePatientId, @SourceExamId, @PatientCpf, @PatientRG, @ExamName, @FileExtension, @FilePath, @ExamDate, @UploadDate, @CreatedBy, @ModifiedBy, @CreatedOn, @ModifiedOn); SELECT LAST_INSERT_ID()";
 
         private string UPDATE_SQL = 
 $@"UPDATE ExamReport SET UserId = @UserId, SourcePatientId = @SourcePatientId, SourceExamId = @SourceExamId, PatiendCpf = @PatientCpf, PatientRg = @PatientRg, 
@@ -30,19 +30,20 @@ CreatedBy = @CreatedBy, ModifiedBy = @ModifiedBy, CreatedOn = @CreatedOn, Modifi
 WHERE Id = @Id";
 
 
-        public ExamReportRepository(IDBConnectionFactory dBConnectionFactory, ILogger<ExamReportRepository> logger) : base(dBConnectionFactory, logger)
+        public ExamReportRepository(ILogger<ExamReportRepository> logger) : base(logger)
         {
 
         }
 
-        public Response<long> Insert(ExamReport exam)
+        public NDResponse<long> Insert(DbConnection connection, ExamReport exam)
         {
-            Response<long> response = new Response<long>();
+            NDResponse<long> NDResponse = new NDResponse<long>();
 
             try
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add($@"@{nameof(ExamReport.UserId)}", exam.UserId);
+                parameters.Add($@"@{nameof(ExamReport.RegisterId)}", exam.RegisterId);
                 parameters.Add($@"@{nameof(ExamReport.PatientCPF)}", exam.PatientCPF);
                 parameters.Add($@"@{nameof(ExamReport.PatientRG)}", exam.PatientRG);
                 parameters.Add($@"@{nameof(ExamReport.SourcePatientId)}", exam.SourcePatientId);
@@ -55,24 +56,24 @@ WHERE Id = @Id";
 
                 base.AddBaseModelParameters(parameters, exam);
 
-                using (DbCommand cmd = CreateCommand(INSERT_SQL, parameters))
+                using (DbCommand cmd = CreateCommand(connection, INSERT_SQL, parameters))
                 {
-                    response.ResponseData = ExecuteScalar<long>(cmd);
-                    response.StatusCode = HttpStatusCode.Created;
+                    NDResponse.ResponseData = ExecuteScalar<long>(cmd);
+                    NDResponse.StatusCode = HttpStatusCode.Created;
                 }
 
             }
             catch (Exception ex)
             {
-                base.HandleWithException(response, ex);
+                base.HandleWithException(NDResponse, ex);
             }
 
-            return response;
+            return NDResponse;
         }
 
-        public Response<bool> Update(ExamReport exam)
+        public NDResponse<bool> Update(DbConnection connection, ExamReport exam)
         {
-            Response<bool> response = new();
+            NDResponse<bool> NDResponse = new();
 
             try
             {
@@ -90,38 +91,38 @@ WHERE Id = @Id";
                 parameters.Add($@"@{nameof(ExamReport.UploadDate)}", exam.UploadDate);
                 base.AddBaseModelParameters(parameters, exam);
 
-                using (DbCommand cmd = CreateCommand(UPDATE_SQL, parameters))
+                using (DbCommand cmd = CreateCommand(connection, UPDATE_SQL, parameters))
                 {
                     ExecuteNonQuery(cmd);
-                    response.ResponseData = true;
-                    response.StatusCode = HttpStatusCode.OK;
+                    NDResponse.ResponseData = true;
+                    NDResponse.StatusCode = HttpStatusCode.OK;
                 }
 
             }
             catch (Exception ex)
             {
-                base.HandleWithException(response, ex);
+                base.HandleWithException(NDResponse, ex);
             }
 
-            return response;
+            return NDResponse;
         }
 
-        public ListResponse<ExamReport> FindByRequest(BaseListRequest request)
+        public NDListResponse<ExamReport> FindByRequest(DbConnection connection, NDListRequest request)
         {
-            ListResponse<ExamReport> response = new();
-            response.ResponseData ??= new();
+            NDListResponse<ExamReport> NDResponse = new();
+            NDResponse.ResponseData ??= new();
 
             try
             {
                 string sql = $"{SELECT_SQL} {RetrieveFilterWhereClause(request.Filters)} ORDER BY Id DESC";
 
-                using (DbCommand cmd = CreateCommand(sql.ToString(), RetrieveFilterParameters(request.Filters)))
+                using (DbCommand cmd = CreateCommand(connection, sql.ToString(), RetrieveFilterParameters(request.Filters)))
                 {
                     using (DbDataReader reader = ExecuteReader(cmd).ResponseData)
                     {
                         while (reader.Read())
                         {
-                            response.ResponseData.Add(ModelUtility.FillObject<ExamReport>(reader));
+                            NDResponse.ResponseData.Add(ModelUtility.FillObject<ExamReport>(reader));
                         }
                     }
                 }
@@ -129,27 +130,27 @@ WHERE Id = @Id";
             }
             catch (Exception ex)
             {
-                base.HandleWithException(response, ex);
+                base.HandleWithException(NDResponse, ex);
             }
 
 
-            return response;
+            return NDResponse;
         }
 
-        public ListResponse<ExamReport> FindAll()
+        public NDListResponse<ExamReport> FindAll(DbConnection connection)
         {
-            ListResponse<ExamReport> response = new();
-            response.ResponseData ??= new();
+            NDListResponse<ExamReport> NDResponse = new();
+            NDResponse.ResponseData ??= new();
 
             try
             {
-                using (DbCommand cmd = CreateCommand(SELECT_SQL))
+                using (DbCommand cmd = CreateCommand(connection, SELECT_SQL))
                 {
                     using (DbDataReader reader = ExecuteReader(cmd).ResponseData)
                     {
                         while (reader.Read())
                         {
-                            response.ResponseData.Add(ModelUtility.FillObject<ExamReport>(reader));
+                            NDResponse.ResponseData.Add(ModelUtility.FillObject<ExamReport>(reader));
                         }
                     }
                 }
@@ -157,11 +158,11 @@ WHERE Id = @Id";
             }
             catch (Exception ex)
             {
-                base.HandleWithException(response, ex);
+                base.HandleWithException(NDResponse, ex);
             }
 
 
-            return response;
+            return NDResponse;
         }
     }
 }

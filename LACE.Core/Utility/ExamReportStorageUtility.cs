@@ -14,9 +14,9 @@ namespace LACE.Core.Utility
     {
         private static readonly string storagePath = $@"Files";
 
-        public static Response<bool> SaveFile(ExamReport report)
+        public static NDResponse<bool> SaveFile(ExamReport report)
         {
-            var response = new Response<bool>();
+            var NDResponse = new NDResponse<bool>();
 
             report.FilePath = $@"{storagePath}/{GenerateFilePath(report)}";
 
@@ -34,7 +34,7 @@ namespace LACE.Core.Utility
                 stream.Write(buffer, 0, buffer.Length);
             }
 
-            return response;
+            return NDResponse;
         }
 
         public static void GetFiles(List<ExamReport> reports, ILogger logger)
