@@ -31,7 +31,6 @@ export class UserUpdateComponent extends BaseComponent implements OnInit {
   }
 
   async init(){
-    await this.validateUser();
     this.applyCurrentUserToFormGroup();
   }
 

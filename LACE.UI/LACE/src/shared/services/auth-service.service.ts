@@ -15,14 +15,6 @@ export class AuthService {
     return this.httpService.post<BaseResponse<AuthSession>>('login', user);
   }
 
-  validate() {
-    return this.httpService.get<BaseResponse<boolean>>('login');
-  }
-
-  logout(){
-    return this.httpService.delete<BaseResponse<boolean>>('login');
-  }
-
   getSessionUser(){
     return this.httpService.get<BaseResponse<AuthUser>>('login/user');
   }

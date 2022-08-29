@@ -22,7 +22,7 @@ export class UserRegisterComponent extends BaseComponent implements OnInit {
   });
 
   constructor(private _userService: UserService) {
-    super(false);
+    super();
   }
 
   ngOnInit(): void {

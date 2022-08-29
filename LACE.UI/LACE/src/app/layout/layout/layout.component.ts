@@ -10,11 +10,10 @@ export class LayoutComponent extends BaseComponent implements OnInit {
 
   public isExpanded:boolean = false;
   constructor() {
-    super(false);
+    super();
   }
 
   ngOnInit(): void {
-    this.validateUser(true);
   }
 
   toggleMenu(){

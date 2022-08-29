@@ -20,7 +20,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
 
 
   constructor() {
-    super(false);
+    super();
   }
 
   ngOnInit(): void {
@@ -43,7 +43,6 @@ export class HomeComponent extends BaseComponent implements OnInit {
         }
 
         localStorage.setItem("Session", loginResponse?.responseData?.sessionKey || '');
-        await this.validateUser(true);
 
         if (this.isLogged)
           this._router.navigateByUrl("/reports");

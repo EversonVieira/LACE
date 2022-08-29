@@ -10,7 +10,7 @@ import { AuthUser } from 'src/shared/models/auth-user';
 export class HeaderLoginComponent extends BaseComponent implements OnInit {
 
   constructor() {
-    super(false);
+    super();
    }
 
   ngOnInit(): void {
@@ -20,7 +20,6 @@ export class HeaderLoginComponent extends BaseComponent implements OnInit {
 
 
     try{
-      const logoutResponse = await this._loginService.logout().toPromise();
       localStorage.removeItem("Session");
       CurrentUser.setUser(new AuthUser());
     }

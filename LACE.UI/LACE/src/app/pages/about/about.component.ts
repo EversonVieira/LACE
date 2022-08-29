@@ -9,7 +9,7 @@ import { BaseComponent } from 'src/shared/components/base-component';
 export class AboutComponent extends BaseComponent implements OnInit {
 
   constructor() {
-    super(false);
+    super();
    }
 
   ngOnInit(): void {
