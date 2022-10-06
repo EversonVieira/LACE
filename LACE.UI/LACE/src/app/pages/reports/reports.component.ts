@@ -32,6 +32,7 @@ export class ReportsComponent extends BaseComponent implements OnInit {
 
   downloadFile(report: DTO_ExamReportPublic) {
 
+    console.log(report);
     const byteCharacters = atob(report.fileSource);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {

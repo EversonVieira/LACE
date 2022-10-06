@@ -3,10 +3,11 @@
         sourceExamId: string = '';
         patientCpf: string = '';
         patientRG: string = '';
-        patientSus: string = '';
+        patientSUS: string = '';
         examName: string = '';
         fileExtension: string = '';
         fileSource: string = '';
         examDate:Date = new Date();
         uploadDate:Date = new Date();
+        registerId:string = '';
  }

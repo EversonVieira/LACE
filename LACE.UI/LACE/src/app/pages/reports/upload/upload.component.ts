@@ -45,6 +45,7 @@ export class UploadComponent extends BaseComponent implements OnInit {
 
   uploadFile() {
     let dto_ExamReport:DTO_ExamReportPublic = this.fromGroup();
+    dto_ExamReport.registerId = new Date().toUTCString();
 
 
     this.reportService.create(dto_ExamReport).subscribe(r => {
@@ -62,6 +63,7 @@ export class UploadComponent extends BaseComponent implements OnInit {
     obj.sourcePatientId = this.uploadForm.get('sourcePatientId')?.value;
     obj.patientCpf = this.uploadForm.get('patientCpf')?.value;
     obj.patientRG = this.uploadForm.get('patientRG')?.value;
+    obj.patientSUS = this.uploadForm.get('patientSUS')?.value;
     obj.examDate = this.uploadForm.get('examDate')?.value;
     obj.uploadDate = new Date();
 

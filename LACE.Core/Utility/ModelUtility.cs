@@ -39,7 +39,7 @@ namespace LACE.Core.Utility
 
             foreach (PropertyInfo prop in outputProperties)
             {
-                if (prop.SetMethod is null && inputProperties.Exists(x => x.Name.Equals(prop.Name)))
+                if (prop.SetMethod is not null && inputProperties.Exists(x => x.Name.Equals(prop.Name)))
                 {
                     prop.SetValue(output, inputProperties.First(x => x.Name.Equals(prop.Name)).GetValue(obj));
                 }
