@@ -10,6 +10,7 @@ using Nedesk.Core.Interfaces;
 using Nedesk.Core.Models;
 using Nedesk.Core.Security.Factory;
 using Nedesk.Core.Security.Models;
+using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,7 +27,8 @@ namespace LACE.Controllers
                                LoginHelper loginHelper,
                                NDITokenFactory<TokenPayload> tokenFactory,
                                IHttpContextAccessor httpContextAccessor,
-                               ILogger<LoginController> logger) : base(logger, tokenFactory, httpContextAccessor)
+                               NDIAuthenticationService<AuthUser, TokenPayload> authenticationService,
+                               ILogger<LoginController> logger) : base(logger, tokenFactory, authenticationService, httpContextAccessor)
         {
             this._authUserBusiness = authUserBusiness;
             this._loginHelper = loginHelper;
@@ -47,7 +49,7 @@ namespace LACE.Controllers
                 },
                 new NDFilter
                 {
-                    Target1 = nameof(AuthUser.Email),
+                    Target1 = nameof(AuthUser.Password),
                     Value1 = authUser.Password,
                 },
             });
@@ -56,29 +58,50 @@ namespace LACE.Controllers
 
             if (userResponse.HasAnyMessages)
             {
-                return Unauthorized();
+                return Ok(userResponse);
             }
 
             if (!userResponse.ResponseData.Any())
             {
                 userResponse.AddValidationMessage(MessageCodesList.Get("LCEAUTH001"));
+                return Ok(userResponse);
+
             }
 
-            return Ok(this._tokenFactory.CreateToken(new TokenPayload
+            NDResponse<string> tokenResponse = new NDResponse<string>();
+            tokenResponse.ResponseData = this._tokenFactory.CreateToken(new TokenPayload
             {
                 Login = authUser.Email,
                 RefreshData = DateTime.UtcNow,
                 RefreshToken = true,
-            }));
+            }).AsString;
+
+            return Ok(tokenResponse);
         }
 
-        [HttpGet]
+        [HttpPatch("refresh")]
+        [NDAuthenticate]
+        public ActionResult<NDResponse<NDToken<TokenPayload>>> RefreshToken()
+        {
+            var token = this._tokenFactory.CreateToken(_currentUserToken);
+            var payload = JsonSerializer.Deserialize<TokenPayload>(token.Payload);
+
+            if (payload == null)
+            {
+                return Unauthorized();
+            }
+
+            payload.RefreshData = DateTime.UtcNow;
+            return Ok(this._tokenFactory.CreateToken(payload).AsString);
+        }
+
+        [HttpGet("user")]
         [NDAuthenticate]
         public ActionResult<NDResponse<AuthUser>> GetSessionUser()
         {
-            AuthUser item = this.RetrieveCurrentUser();
-            item.Password = String.Empty;
-            return Ok(item);
+            NDResponse<AuthUser> userResponse = new NDResponse<AuthUser>();
+            userResponse.ResponseData = this.RetrieveCurrentUser();
+            return Ok(userResponse);
         }
 
     }

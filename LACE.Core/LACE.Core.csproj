@@ -8,13 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
-    <PackageReference Include="Nedesk" Version="1.2.3-pre-1.4.4.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Nedesk">
-      <HintPath>..\..\Nedesk\Nedesk\bin\Debug\net6.0\Nedesk.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\Nedesk\Nedesk\Nedesk.csproj" />
   </ItemGroup>
 
 </Project>

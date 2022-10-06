@@ -16,11 +16,12 @@ namespace LACE.Core.Controller
 {
     public class LACEBaseController : NDBaseController<AuthUser, TokenPayload>
     {
-        public LACEBaseController(ILogger<NDBaseController<AuthUser, TokenPayload>> logger, 
-                                  NDITokenFactory<TokenPayload> tokenFactory, 
-                                  IHttpContextAccessor httpContextAccessor) : base(logger, tokenFactory, httpContextAccessor)
+        public LACEBaseController(ILogger<NDBaseController<AuthUser, TokenPayload>> logger,
+                                  NDITokenFactory<TokenPayload> tokenFactory,
+                                  NDIAuthenticationService<AuthUser, TokenPayload> authenticationService,
+                                  IHttpContextAccessor httpContextAccessor) : base(logger, tokenFactory, authenticationService, httpContextAccessor)
         {
-            
+
         }
     }
 }

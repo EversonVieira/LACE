@@ -1,5 +1,6 @@
 ﻿using LACE.Core.Models;
 using LACE.Core.Models.DTO;
+using LACE.Core.Models.Enums;
 using LACE.Core.Repository;
 using LACE.Core.Utility;
 using LACE.Core.Validators;
@@ -150,9 +151,17 @@ namespace LACE.Core.Business
             }
         }
 
-        public NDListResponse<DTO_ExamReport> FindByRegisterId(string registerID)
+        public NDListResponse<DTO_ExamReport> FindByRegister(string registerID, string document, DocumentTypeEnum documentType)
         {
             NDListResponse<DTO_ExamReport> NDResponse = new NDListResponse<DTO_ExamReport>();
+
+            string targetDocument = documentType switch
+            {
+                DocumentTypeEnum.CPF => "PatientCPF",
+                DocumentTypeEnum.RG => "PatientRG",
+                DocumentTypeEnum.SUS => "PatientSUS",
+                _ => throw new NotImplementedException(),
+            };
 
             NDListRequest request = new NDListRequest();
             request.Filters.AddRange(new List<NDFilter>
@@ -164,6 +173,13 @@ namespace LACE.Core.Business
                     AggregateType = NDFilterAggregateTypeEnum.AND,
                     Value1 = registerID
                 },
+                new NDFilter
+                {
+                    Target1 = targetDocument,
+                    OperationType = NDFilterOperationTypeEnum.Equals,
+                    AggregateType = NDFilterAggregateTypeEnum.AND,
+                    Value1 = document
+                }
             });
 
             using (DbConnection connection = _connectionFactory.GetReadOnlyConnection())

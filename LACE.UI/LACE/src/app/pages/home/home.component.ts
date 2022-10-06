@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BaseComponent, CurrentUser } from 'src/shared/components/base-component';
-import { AuthSession } from 'src/shared/models/auth-session';
 import { AuthUser } from 'src/shared/models/auth-user';
 import { BaseResponse } from 'src/shared/models/base-response';
+import { ReportsService } from 'src/shared/services/reports.service';
 
 @Component({
   selector: 'app-home',
@@ -14,49 +14,56 @@ export class HomeComponent extends BaseComponent implements OnInit {
 
   public userForm: FormGroup = new FormGroup({
     email: new FormControl(''),
-    password: new FormControl('')
+    password: new FormControl(''),
+    examId: new FormControl(''),
+    document: new FormControl(''),
+    documentType: new FormControl(0),
   });
 
 
 
-  constructor() {
+  constructor(private reportsService:ReportsService) {
     super();
   }
 
   ngOnInit(): void {
+    
   }
 
-  async onSubmit() {
-    const authUser: AuthUser = new AuthUser();
-    authUser.email = this.userForm.get('email')?.value;
-    authUser.password = this.userForm.get('password')?.value;
+  async onDownload(){
+    this.reportsService.downloadByExam(
+      this.userForm.get('examId')?.value,
+      this.userForm.get('document')?.value,
+      this.userForm.get('documentType')?.value,
+    ).subscribe(response => {
 
-    if(CurrentUser.getUser().id > 0){
-      this._toastrService.warning('Saia para entrar com outra conta.')
-      return;
-    }
+      if (response.responseData){
+        let report = response.responseData?.length > 0 ? response.responseData[0] : null;
 
-    try {
-      this._loginService.login(authUser).subscribe(async loginResponse => {
-        if (this.invalidResponse(<BaseResponse<AuthSession>>loginResponse)) {
-          return;
+        if (report){
+          const byteCharacters = atob(report.fileSource);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+              byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const aux = new Uint8Array(byteNumbers);
+          
+          const data = new Blob([aux],
+            { type: 'application/pdf' });
+      
+          let fileUrl = window.URL.createObjectURL(data);
+          let a: any = document.createElement('a');
+      
+      
+          a.href = fileUrl
+          a.setAttribute('download', report.examName);
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(fileUrl);
         }
-
-        localStorage.setItem("Session", loginResponse?.responseData?.sessionKey || '');
-
-        if (this.isLogged)
-          this._router.navigateByUrl("/reports");
-      }, err => {
-        if (err.status = 401) {
-          this.ShowNotifications(<BaseResponse<unknown>>err.error);
-          return;
-        }
-        this.handleHttpError();
-
-      })
-    }
-    catch {
-      this.handleHttpError();
-    }
+      }
+      
+    })
   }
+ 
 }

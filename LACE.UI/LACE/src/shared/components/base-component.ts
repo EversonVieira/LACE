@@ -21,10 +21,14 @@ export class BaseComponent {
         this._toastrService = injector.get(ToastrService);
         this._loginService = injector.get(AuthService);
         this._router = injector.get(Router);
+
+        setInterval(() => {
+            this.isLogged = CurrentUser.getUser().id > 0;
+        }, 10);
+
+        
+
     }
-
-
-    
 
     invalidResponse<T>(response: BaseResponse<T>): boolean {
         this.ShowNotifications(response);
@@ -71,7 +75,7 @@ export class CurrentUser {
         Object.assign(this.authUser, user);
     }
 
-    static getUser():AuthUser {
+    static getUser(): AuthUser {
         return this.authUser;
     }
 }

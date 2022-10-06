@@ -20,7 +20,7 @@ export class HttpService {
       headers = headers.set('Access-Control-Allow-Methods', this.httpConfiguration.AccessControlAllowMethods);
       headers = headers.set("Access-Control-Allow-Headers", this.httpConfiguration.AccessControlAllowHeaders);
       headers = headers.set('Content-Type', this.httpConfiguration.ContentType);
-      headers = headers.set('session', localStorage.getItem('Session') || '');
+      headers = headers.set('NDToken', localStorage.getItem('NDToken') || '');
 
       return headers;
   }

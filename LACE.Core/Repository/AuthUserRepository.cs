@@ -18,7 +18,7 @@ namespace LACE.Core.Repository
     public class AuthUserRepository : BaseRepository
     {
         private string SELECT_SQL = 
-@$"SELECT Id, Cpf, Rg, Sus, Name, Email, Password, IsActive, IsLocked, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn FROM AuthUser ";
+@$"SELECT Id, Cpf, Rg, Sus, Name, Email, IsActive, IsLocked, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn FROM AuthUser ";
 
         private string INSERT_SQL =
 $@"INSERT INTO AuthUser(Cpf, Rg, Sus, Name, Email, Password, IsActive, IsLocked, CreatedBy, ModifiedBy, CreatedOn, ModifiedOn)

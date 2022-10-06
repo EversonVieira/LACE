@@ -1,4 +1,5 @@
 ﻿using LACE.Core.Business;
+using LACE.Core.ExtensionMethods;
 using LACE.Core.Helper;
 using LACE.Core.Messages;
 using LACE.Core.Models;
@@ -29,14 +30,23 @@ namespace LACE.Core.Adapter
             _logger = logger;
         }
 
+        private void MaintainUser(AuthUser model)
+        {
+            model.Cpf = model.Cpf?.RemoveDotsAndDashes() ?? string.Empty;
+            model.Rg = model.Rg?.RemoveDotsAndDashes() ?? string.Empty;
+            model.Sus = model.Sus?.RemoveDotsAndDashes() ?? string.Empty;
+        }
+
         public NDResponse<long> Insert(DTO_AuthUser_Register model)
         {
+            MaintainUser(model);
             NDResponse<long> NDResponse = new NDResponse<long>();
             if (!model.Password.Equals(model.ConfirmPassword))
             {
                 NDResponse.AddValidationMessage(MessageCodesList.Get("LCEAUTH002"));
                 return NDResponse;
             }
+
 
             _loginHelper.EncrpytUserSensistiveInformation(model);
 
@@ -45,6 +55,7 @@ namespace LACE.Core.Adapter
 
         public NDResponse<bool> Update(DTO_AuthUser_Update model)
         {
+            MaintainUser(model);
             NDResponse<bool> NDResponse = new NDResponse<bool>();
             if (!model.Password.Equals(model.ConfirmPassword))
             {

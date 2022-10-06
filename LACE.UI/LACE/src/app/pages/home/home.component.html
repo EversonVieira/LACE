@@ -5,33 +5,35 @@
 
     <div class="content">
         <div class="content-container">
-            <label class="home-text">Tenha acesso aos seus últimos laudos no LACE.</label>
-            <label class="home-text">Faça Login ou cadastra-se para continuar.</label>
-        </div>
-        <div class="content-container">
             <div class="content-item">
+                <label class="home-text">Tenha acesso aos seus últimos laudos no LACE.</label>
+
                 <form [formGroup]="userForm">
-
                     <div class="form-group pt-3">
-                        <label for="email">E-mail: </label>
-                        <input class="form-control" id="email" type="text" formControlName="email">
+                        <label for="examId">Id do Exame:</label>
+                        <input class="form-control" id="examId" type="text" formControlName="examId">
                     </div>
 
                     <div class="form-group pt-3">
-                        <label for="password">Senha: </label>
-                        <input class="form-control" id="password" type="password" formControlName="password">
+                        <label for="documentType">Tipo do Documento: </label>
+                        <select formControlName="documentType" class="form-select">
+                            <option selected="selected" value="0">CPF</option>
+                            <option value="1">SUS</option>
+                            <option value="2">RG</option>
+                        </select>
                     </div>
 
                     <div class="form-group pt-3">
-                        <button class="btn btn-primary w-100" (click)="onSubmit()">Login</button>
-                        <div class="d-flex pt-2">
-                            <label>Não possui conta? <a [routerLink]="'/user/register'">Cadastre-se</a></label>
-    
-                            <!-- <a [routerLink]="'/user/register'">recuperar a senha</a> -->
-                        </div>
+                        <label for="document">Documento: </label>
+                        <input class="form-control" id="document" type="text" formControlName="document">
                     </div>
-
                 </form>
+
+
+                <div class="form-group pt-3">
+                    <button class="btn btn-primary w-100" (click)="onDownload()">Baixar</button>
+                </div>
+
             </div>
         </div>
     </div>

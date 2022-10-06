@@ -47,21 +47,21 @@ namespace LACE.Core.Business
                     Target1 = nameof(AuthUser.Cpf),
                     OperationType = NDFilterOperationTypeEnum.Equals,
                     AggregateType = NDFilterAggregateTypeEnum.OR,
-                    Value1 = model.Cpf.RemoveDotsAndDashes(),
+                    Value1 = model.Cpf,
                 },
                 new NDFilter
                 {
                     Target1 = nameof(AuthUser.Rg),
                     OperationType = NDFilterOperationTypeEnum.Equals,
                     AggregateType = NDFilterAggregateTypeEnum.OR,
-                    Value1 = model.Rg.RemoveDotsAndDashes(),
+                    Value1 = model.Rg,
                 },
                 new NDFilter
                 {
                     Target1 = nameof(AuthUser.Sus),
                     OperationType = NDFilterOperationTypeEnum.Equals,
                     AggregateType = NDFilterAggregateTypeEnum.OR,
-                    Value1 = model.Sus.RemoveDotsAndDashes(),
+                    Value1 = model.Sus,
                 }
             });
             

@@ -20,7 +20,7 @@ export class HeaderLoginComponent extends BaseComponent implements OnInit {
 
 
     try{
-      localStorage.removeItem("Session");
+      localStorage.removeItem("NDToken");
       CurrentUser.setUser(new AuthUser());
     }
     catch{

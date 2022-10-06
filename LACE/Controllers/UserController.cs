@@ -22,11 +22,12 @@ namespace LACE.Controllers
     {
         private readonly AuthUserAdapter _authUserAdapter;
 
-        public UserController(AuthUserAdapter authUserAdapter, 
-                              ILogger<UserController> logger, 
+        public UserController(AuthUserAdapter authUserAdapter,
+                              ILogger<UserController> logger,
                               NDITokenFactory<TokenPayload> tokenFactory,
                               IHttpContextAccessor httpContextAccessor,
-                              ILogger<LoginController> UserController) : base(logger, tokenFactory, httpContextAccessor)
+                              NDIAuthenticationService<AuthUser, TokenPayload> authenticationService,
+                              ILogger<LoginController> UserController) : base(logger, tokenFactory, authenticationService, httpContextAccessor)
         {
             this._authUserAdapter = authUserAdapter;
         }

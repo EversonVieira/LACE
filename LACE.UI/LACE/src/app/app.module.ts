@@ -25,6 +25,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { HeaderLoginComponent } from './layout/components/header-login/header-login.component';
 import { UploadComponent } from './pages/reports/upload/upload.component';
+import { LoginComponent } from './pages/login/login.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { UploadComponent } from './pages/reports/upload/upload.component';
     UserUpdateComponent,
     HeaderLoginComponent,
     UploadComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

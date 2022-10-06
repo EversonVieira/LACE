@@ -4,6 +4,7 @@ using LACE.Core.Controller;
 using LACE.Core.Helper;
 using LACE.Core.Models;
 using LACE.Core.Models.DTO;
+using LACE.Core.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Nedesk.Core.Attributes;
 using Nedesk.Core.Interfaces;
@@ -17,7 +18,6 @@ namespace LACE.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [NDAuthenticate]
     public class ExamReportController : LACEBaseController
     {
         private readonly AuthUserBusiness _authUserBusiness;
@@ -29,8 +29,9 @@ namespace LACE.Controllers
                                     ExamReportBusiness examReportBusiness,
                                     LoginHelper loginHelper,
                                     NDITokenFactory<TokenPayload> tokenFactory,
+                                    NDIAuthenticationService<AuthUser, TokenPayload> authenticationService,
                                     IHttpContextAccessor httpContextAccessor,
-                                    ILogger<LoginController> logger) : base(logger, tokenFactory, httpContextAccessor)
+                                    ILogger<LoginController> logger) : base(logger, tokenFactory, authenticationService, httpContextAccessor)
         {
             this._authUserBusiness = authUserBusiness;
             this._examReportBusiness = examReportBusiness;
@@ -38,18 +39,28 @@ namespace LACE.Controllers
         }
 
         [HttpGet]
+        [NDAuthenticate]
         public ActionResult<NDListResponse<DTO_ExamReport>> GetByLoggedUser()
         {
             var currentUser = this.RetrieveCurrentUser();
             return Ok(_examReportBusiness.FindByUserId(currentUser));
         }
 
+
         [HttpPost]
+        [NDAuthenticate]
         public ActionResult<NDListResponse<DTO_ExamReport>> Create(DTO_ExamReport report)
         {
             var currentUser = this.RetrieveCurrentUser();
             return Ok(_examReportBusiness.Insert(report));
         }
 
+        [HttpGet("exam")]
+        public ActionResult<NDListResponse<DTO_ExamReport>> GetByLoggedUser(string examId, string document, DocumentTypeEnum documentType)
+        {
+            return Ok(_examReportBusiness.FindByRegister(examId, document, documentType));
+        }
+
+        
     }
 }
