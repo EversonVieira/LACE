@@ -46,7 +46,6 @@ export class LoginComponent extends BaseComponent implements OnInit {
         localStorage.setItem("NDToken", loginResponse?.responseData || '');
 
         this._loginService.getSessionUser().subscribe(response => {
-
           if (this.invalidResponse(response)){
             localStorage.removeItem("NDToken");
             return;
@@ -55,6 +54,8 @@ export class LoginComponent extends BaseComponent implements OnInit {
           CurrentUser.setUser(<AuthUser> response.responseData);
 
           this.router.navigateByUrl('home');
+
+          console.log(CurrentUser.getUser());
 
         }, err => {
           if (err.status = 401) {

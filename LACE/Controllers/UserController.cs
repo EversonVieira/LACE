@@ -16,7 +16,6 @@ namespace LACE.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [NDAuthenticate]
 
     public class UserController : LACEBaseController
     {
@@ -39,6 +38,7 @@ namespace LACE.Controllers
         }
 
         [HttpPut]
+        [NDAuthenticate]
         public ActionResult<NDResponse<int>> Update(DTO_AuthUser_Update user)
         {
             return Ok(_authUserAdapter.Update(user));

@@ -1,7 +1,6 @@
 ﻿using LACE.Core.Auth;
 using LACE.Core.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Nedesk.Core.API;
 using Nedesk.Core.Interfaces;

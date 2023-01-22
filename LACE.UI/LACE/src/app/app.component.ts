@@ -38,6 +38,8 @@ export class AppComponent implements OnInit{
 
           CurrentUser.setUser(<AuthUser>response.responseData);
 
+          console.log(CurrentUser.getUser());
+
 
       }, err => {
           if (err.status = 401) {
